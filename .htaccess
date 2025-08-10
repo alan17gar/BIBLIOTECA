@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # No reescribir peticiones a archivos o directorios existentes
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+
+  # Reescribir todas las demás peticiones a index.php
+  RewriteRule ^(.*)$ index.php [L,QSA]
+</IfModule>
+
+# Evitar que se listen los directorios
+Options -Indexes
+
+# Establecer el charset por defecto a UTF-8
+AddDefaultCharset UTF-8

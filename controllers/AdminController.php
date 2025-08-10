@@ -1,0 +1,140 @@
+<?php
+// controllers/AdminController.php - Controlador para el panel de administración
+
+// Incluir los modelos necesarios
+require_once 'models/User.php';
+require_once 'models/Book.php';
+require_once 'models/Loan.php';
+require_once 'models/Task.php';
+require_once 'controllers/AuthController.php'; // Para usar los checks de rol
+
+class AdminController {
+    private $db;
+    private $user;
+    private $book;
+    private $loan;
+    private $task;
+
+    public function __construct($db) {
+        $this->db = $db;
+        $this->user = new User($this->db);
+        $this->book = new Book($this->db);
+        $this->loan = new Loan($this->db);
+        $this->task = new Task($this->db);
+
+        // Proteger todas las acciones del admin
+        AuthController::requireAdmin();
+    }
+
+    // --- Dashboard Principal del Admin ---
+    public function index() {
+        // Cargar datos para las estadísticas del dashboard
+        $total_books = $this->book->readAll()->rowCount();
+        $total_users = $this->user->readAll()->rowCount();
+        $total_loans = $this->loan->readAll()->rowCount();
+
+        // Cargar la vista del dashboard del admin
+        require 'views/admin/dashboard.php';
+    }
+
+    // --- Gestión de Libros (CRUD) ---
+    public function books() {
+        $stmt = $this->book->readAll();
+        require 'views/admin/books.php';
+    }
+
+    public function createBook() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Asignar datos del formulario al objeto libro
+            $this->book->titulo = $_POST['titulo'];
+            $this->book->autor = $_POST['autor'];
+            $this->book->isbn = $_POST['isbn'];
+            $this->book->categoria = $_POST['categoria'];
+            $this->book->sinopsis = $_POST['sinopsis'];
+            $this->book->cantidad_total = $_POST['cantidad_total'];
+            $this->book->cantidad_disponible = $_POST['cantidad_total']; // Al crear, disponible = total
+            $this->book->ubicacion_fisica = $_POST['ubicacion_fisica'];
+
+            // Manejo de la subida de archivos (portada y PDF)
+            $this->book->portada = $this->uploadFile('portada', 'uploads/covers/');
+            $this->book->pdf_ruta = $this->uploadFile('pdf', 'uploads/pdfs/');
+
+            if ($this->book->create()) {
+                header("Location: /biblioteca-app/admin/books");
+                exit;
+            }
+        }
+        require 'views/admin/book_form.php'; // Formulario para crear/editar
+    }
+
+    public function editBook($id) {
+        $this->book->id = $id;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Lógica de actualización...
+            $this->book->titulo = $_POST['titulo'];
+            // ... (resto de campos)
+            if ($this->book->update()) {
+                header("Location: /biblioteca-app/admin/books");
+                exit;
+            }
+        } else {
+            $this->book->readOne();
+            require 'views/admin/book_form.php';
+        }
+    }
+
+    public function deleteBook($id) {
+        $this->book->id = $id;
+        if ($this->book->delete()) {
+            header("Location: /biblioteca-app/admin/books");
+            exit;
+        }
+    }
+
+    // --- Gestión de Usuarios (CRUD) ---
+    public function users() {
+        $stmt = $this->user->readAll();
+        require 'views/admin/users.php';
+    }
+
+    // ... (métodos para createUser, editUser, deleteUser similares a los de libros)
+
+    // --- Gestión de Préstamos ---
+    public function loans() {
+        $stmt = $this->loan->readAll();
+        require 'views/admin/loans.php';
+    }
+
+    public function returnLoan($id) {
+        $this->loan->id = $id;
+        if ($this->loan->returnBook()) {
+            header("Location: /biblioteca-app/admin/loans");
+            exit;
+        }
+    }
+
+    // --- Gestión de Tareas ---
+    public function tasks() {
+        $stmt = $this->task->readAll();
+        require 'views/admin/tasks.php';
+    }
+
+    // ... (métodos para crear y gestionar tareas)
+
+    // --- Función auxiliar para subir archivos ---
+    private function uploadFile($file_input_name, $target_dir) {
+        if (isset($_FILES[$file_input_name]) && $_FILES[$file_input_name]['error'] == 0) {
+            $target_file = $target_dir . basename($_FILES[$file_input_name]["name"]);
+            $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+            // Validaciones (tamaño, tipo, etc.)
+            // ...
+
+            if (move_uploaded_file($_FILES[$file_input_name]["tmp_name"], $target_file)) {
+                return $target_file; // Devolver la ruta del archivo
+            }
+        }
+        return ""; // Devolver cadena vacía si no se subió archivo
+    }
+}
+?>
