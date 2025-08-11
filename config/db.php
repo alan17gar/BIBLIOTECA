@@ -7,7 +7,7 @@ class Database {
     private $host = 'localhost';
     private $db_name = 'biblioteca_app';
     private $username = 'root';
-    private 'password' = ''; // Por defecto, la contraseña de root en XAMPP/WAMP es vacía
+    private $password = ''; // Por defecto, la contraseña de root en XAMPP/WAMP es vacía
     private $conn;
 
     // Método para obtener la conexión a la base de datos
