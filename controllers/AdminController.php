@@ -119,7 +119,32 @@ class AdminController {
         require 'views/admin/tasks.php';
     }
 
-    // ... (métodos para crear y gestionar tareas)
+    public function createTask() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Procesar el formulario enviado
+            $this->task->titulo = $_POST['titulo'];
+            $this->task->descripcion = $_POST['descripcion'];
+            $this->task->usuario_asignado_id = $_POST['usuario_asignado_id'];
+            $this->task->libro_relacionado_id = !empty($_POST['libro_relacionado_id']) ? $_POST['libro_relacionado_id'] : null;
+            $this->task->fecha_limite = $_POST['fecha_limite'];
+
+            if ($this->task->create()) {
+                // Redirigir a la lista de tareas si se crea con éxito
+                header("Location: /biblioteca-app/admin/tasks");
+                exit;
+            } else {
+                // Manejar error
+                echo "Error al crear la tarea.";
+            }
+        } else {
+            // Mostrar el formulario de creación
+            // Necesitamos pasarle la lista de estudiantes y libros a la vista
+            $students = $this->user->readAll(); // Asumimos que readAll() devuelve todos los usuarios
+            $books = $this->book->readAll();
+
+            require 'views/admin/task_form.php';
+        }
+    }
 
     // --- Función auxiliar para subir archivos ---
     private function uploadFile($file_input_name, $target_dir) {
