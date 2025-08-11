@@ -24,7 +24,9 @@ class AuthController {
             $this->user->password = $_POST['password'];
 
             // Intentar hacer login
-            if ($this->user->login()) {
+            $login_result = $this->user->login();
+
+            if ($login_result === 0) { // 0 = Éxito
                 // Si el login es exitoso, guardar datos en la sesión
                 $_SESSION['user_id'] = $this->user->id;
                 $_SESSION['user_role'] = $this->user->rol;
@@ -38,8 +40,14 @@ class AuthController {
                 }
                 exit;
             } else {
-                // Si el login falla, mostrar un mensaje de error
-                $error = "Nombre de usuario o contraseña incorrectos.";
+                // Si el login falla, determinar el mensaje de error específico
+                if ($login_result === 1) {
+                    $error = "El nombre de usuario no se ha encontrado.";
+                } else if ($login_result === 2) {
+                    $error = "La contraseña es incorrecta.";
+                } else {
+                    $error = "Ha ocurrido un error inesperado durante el login.";
+                }
                 // Cargar la vista de login y pasarle el mensaje de error
                 require 'views/auth/login.php';
             }

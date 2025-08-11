@@ -186,17 +186,21 @@ class User {
 
         $stmt->execute();
 
-        if ($stmt->rowCount() == 1) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            // Verificar la contraseña
-            if (password_verify($this->password, $row['password'])) {
-                $this->id = $row['id'];
-                $this->rol = $row['rol'];
-                return true;
-            }
+        // 1. Verificar si el usuario existe
+        if ($stmt->rowCount() != 1) {
+            return 1; // Código de error: Usuario no encontrado
         }
 
-        return false;
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // 2. Verificar la contraseña
+        if (password_verify($this->password, $row['password'])) {
+            $this->id = $row['id'];
+            $this->rol = $row['rol'];
+            return 0; // Código de éxito
+        } else {
+            return 2; // Código de error: Contraseña incorrecta
+        }
     }
 }
 ?>

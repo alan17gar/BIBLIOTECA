@@ -38,15 +38,23 @@ Sigue estos pasos para ejecutar el proyecto en tu entorno local.
 - Clona o descarga este repositorio.
 - Copia la carpeta completa `biblioteca-app` dentro del directorio `htdocs` de tu instalación de XAMPP (normalmente `C:\xampp\htdocs\` en Windows).
 
-### 3. Crear y Poblar la Base de Datos
+### 3. Crear la Base de Datos
 
 - Abre tu navegador y ve a `http://localhost/phpmyadmin`.
 - Crea una nueva base de datos llamada `biblioteca_app`. Asegúrate de usar el cotejamiento `utf8mb4_unicode_ci`.
 - Selecciona la base de datos recién creada y ve a la pestaña **Importar**.
 - Haz clic en "Seleccionar archivo" y busca el archivo `biblioteca.sql` que se encuentra en la carpeta `sql/` del proyecto.
-- Haz clic en **Importar** para ejecutar el script. Esto creará todas las tablas y añadirá los datos de prueba.
+- Haz clic en **Importar** para ejecutar el script. Esto creará la estructura de todas las tablas.
 
-### 4. Configurar la Conexión a la Base de Datos
+### 4. Poblar la Base de Datos con Datos de Prueba
+
+Para garantizar que las credenciales de los usuarios de prueba funcionen correctamente, debes ejecutar un script "seeder" que creará las cuentas con contraseñas hasheadas correctamente.
+
+- Abre tu navegador y visita la siguiente URL:
+  **`http://localhost/biblioteca-app/sql/seed.php`**
+- Deberías ver un mensaje de éxito indicando que los usuarios (`admin`, `estudiante1`, `estudiante2`) han sido creados.
+
+### 5. Configurar la Conexión a la Base de Datos
 
 - El archivo de configuración `config/db.php` ya viene preconfigurado con las credenciales por defecto de XAMPP:
   - **Host:** `localhost`
