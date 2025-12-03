@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="view_production_lot_tree" model="ir.ui.view">
+            <field name="name">production.lot.tree</field>
+            <field name="model">production.lot</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="total_kg"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_production_lot_form" model="ir.ui.view">
+            <field name="name">production.lot.form</field>
+            <field name="model">production.lot</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="total_kg"/>
+                        </group>
+                        <notebook>
+                            <page string="Daily Productions">
+                                <field name="daily_ids" readonly="1"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_production_lot_search" model="ir.ui.view">
+            <field name="name">production.lot.search</field>
+            <field name="model">production.lot</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="total_kg"/>
+                    <filter string="Start Date" name="filter_start_date" date="start_date"/>
+                    <filter string="End Date" name="filter_end_date" date="end_date"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_production_lot" model="ir.actions.act_window">
+            <field name="name">Production Lots</field>
+            <field name="res_model">production.lot</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_production_lot_search"/>
+        </record>
+    </data>
+</odoo>
