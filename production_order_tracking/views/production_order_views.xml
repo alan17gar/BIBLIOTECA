@@ -25,12 +25,12 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_confirm" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                        <button name="%(action_production_daily_wizard)d" string="Register Daily Production" type="action" class="btn-primary" context="{'default_order_id': active_id}" attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
-                        <button name="%(action_weekly_report_wizard)d" string="Generate Weekly Report" type="action" class="btn-secondary" context="{'default_order_id': active_id}"/>
-                        <button name="action_cancel" string="Cancel" type="object" states="in_progress"/>
+                        <button name="action_confirm" string="Confirm" type="object" class="btn-primary" states="draft"/>
+                        <button name="%(action_production_daily_wizard)d" string="Register Daily Production" type="action" class="btn-primary" states="in_progress" context="{'default_order_id': active_id}"/>
+                        <button name="%(action_weekly_report_wizard)d" string="Generate Weekly Report" type="action" class="btn-secondary" states="in_progress,done" context="{'default_order_id': active_id}"/>
+                        <button name="action_cancel" string="Cancel" type="object" states="in_progress,done"/>
                         <button name="action_reset_to_draft" string="Reset to Draft" type="object" states="cancel"/>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done,cancel"/>
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">

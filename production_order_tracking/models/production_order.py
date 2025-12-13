@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError
+from odoo.exceptions import ValidationError
 
 class ProductionOrder(models.Model):
     _name = 'production.order'
@@ -25,7 +26,7 @@ class ProductionOrder(models.Model):
     def _check_quantity_kg(self):
         for order in self:
             if order.quantity_kg <= 0:
-                raise models.ValidationError("The total quantity must be greater than zero.")
+                raise ValidationError(_("The quantity must be greater than 0 kg."))
 
     def _compute_daily_entry_count(self):
         for order in self:
