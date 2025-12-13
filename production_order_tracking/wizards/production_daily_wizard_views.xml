@@ -11,7 +11,7 @@
                         <field name="date"/>
                         <field name="produced_today"/>
                         <field name="new_lot"/>
-                        <field name="lot_id" attrs="{'invisible': [('new_lot', '=', True)]}"/>
+                        <field name="lot_id" invisible="new_lot"/>
                     </group>
                     <footer>
                         <button name="create_daily_production" string="Create" type="object" class="btn-primary"/>

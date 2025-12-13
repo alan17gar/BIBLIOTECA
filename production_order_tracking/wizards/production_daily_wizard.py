@@ -1,4 +1,5 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 class ProductionDailyWizard(models.TransientModel):
     _name = 'production.daily.wizard'
@@ -17,6 +18,10 @@ class ProductionDailyWizard(models.TransientModel):
 
     def create_daily_production(self):
         self.ensure_one()
+
+        if not self.new_lot and not self.lot_id:
+            raise UserError(_("You must either select an existing lot or check 'Create New Lot'."))
+
         lot = self.lot_id
         if self.new_lot:
             lot = self.env['production.lot'].create({})
