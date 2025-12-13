@@ -19,7 +19,7 @@ class ProductionOrder(models.Model):
         ('cancel', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
     daily_ids = fields.One2many('production.daily', 'order_id', string='Daily Production')
-    is_overdue = fields.Boolean(string="Is Overdue", compute='_compute_is_overdue')
+    is_overdue = fields.Boolean(string="Is Overdue", compute='_compute_is_overdue', store=True)
     daily_entry_count = fields.Integer(compute='_compute_daily_entry_count')
 
     @api.constrains('quantity_kg')
