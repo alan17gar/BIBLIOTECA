@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_production_daily_wizard_form" model="ir.ui.view">
+            <field name="name">production.daily.wizard.form</field>
+            <field name="model">production.daily.wizard</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="order_id"/>
+                        <field name="date"/>
+                        <field name="produced_today"/>
+                        <field name="new_lot"/>
+                        <field name="lot_id" attrs="{'invisible': [('new_lot', '=', True)]}"/>
+                    </group>
+                    <footer>
+                        <button name="create_daily_production" string="Create" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_production_daily_wizard" model="ir.actions.act_window">
+            <field name="name">Register Daily Production</field>
+            <field name="res_model">production.daily.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>
