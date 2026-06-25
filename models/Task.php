@@ -4,16 +4,18 @@
 class Task {
     private $conn;
     private $table_name = "tareas";
-// Propiedades del objeto Tarea
+
+    // Propiedades del objeto Tarea
     public $id;
     public $titulo;
     public $descripcion;
     public $usuario_asignado_id;
     public $libro_relacionado_id;
-    public $fecha_asignacion; 
-    public "fecha_limite";
-    public $estado;
-    public $respuesta;
+    public $fecha_asignacion;
+    public $fecha_limite;
+    public $estado; // 'pendiente', 'completada'
+    public $respuesta; // Respuesta del estudiante a la tarea
+
     public function __construct($db) {
         $this->conn = $db;
     }
