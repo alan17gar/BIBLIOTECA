@@ -28,6 +28,7 @@ class Loan {
     // --- Métodos del Modelo ---
 
     // Crear un nuevo préstamo
+   // Crear un nuevo préstamo
     public function create() {
         // Primero, verificar si hay libros disponibles
         $book = new Book($this->conn);
@@ -36,24 +37,21 @@ class Loan {
             return false; // No hay libros disponibles
         }
 
-        // Si hay libros, proceder con el préstamo
+        // Si hay libros, proceder con el préstamo usando solo campos reales de la BD
         $query = "INSERT INTO " . $this->table_name . "
                   SET
-                    libro_id=:libro_id, usuario_id=:usuario_id,
-                    nombre_estudiante=:nombre_estudiante, codigo_prestamo=:codigo_prestamo,
-                    anio_estudiante=:anio_estudiante, ubicacion_lectura=:ubicacion_lectura,
-                    fecha_prestamo=:fecha_prestamo, fecha_devolucion_estimada=:fecha_devolucion_estimada,
-                    estado=:estado, multa=:multa";
+                    libro_id=:libro_id, 
+                    usuario_id=:usuario_id,
+                    fecha_prestamo=:fecha_prestamo, 
+                    fecha_devolucion_estimada=:fecha_devolucion_estimada,
+                    estado=:estado, 
+                    multa=:multa";
 
         $stmt = $this->conn->prepare($query);
 
-        // Sanitizar datos
+        // Sanitizar datos esenciales
         $this->libro_id = htmlspecialchars(strip_tags($this->libro_id));
         $this->usuario_id = !empty($this->usuario_id) ? htmlspecialchars(strip_tags($this->usuario_id)) : null;
-        $this->nombre_estudiante = htmlspecialchars(strip_tags($this->nombre_estudiante));
-        $this->codigo_prestamo = htmlspecialchars(strip_tags($this->codigo_prestamo));
-        $this->anio_estudiante = htmlspecialchars(strip_tags($this->anio_estudiante));
-        $this->ubicacion_lectura = htmlspecialchars(strip_tags($this->ubicacion_lectura));
         $this->estado = htmlspecialchars(strip_tags($this->estado));
         $this->multa = htmlspecialchars(strip_tags($this->multa));
 
@@ -62,13 +60,9 @@ class Loan {
         // Por defecto, 15 días para devolver
         $this->fecha_devolucion_estimada = date('Y-m-d H:i:s', strtotime('+15 days'));
 
-        // Vincular parámetros
+        // Vincular parámetros reales
         $stmt->bindParam(":libro_id", $this->libro_id);
         $stmt->bindParam(":usuario_id", $this->usuario_id);
-        $stmt->bindParam(":nombre_estudiante", $this->nombre_estudiante);
-        $stmt->bindParam(":codigo_prestamo", $this->codigo_prestamo);
-        $stmt->bindParam(":anio_estudiante", $this->anio_estudiante);
-        $stmt->bindParam(":ubicacion_lectura", $this->ubicacion_lectura);
         $stmt->bindParam(":fecha_prestamo", $this->fecha_prestamo);
         $stmt->bindParam(":fecha_devolucion_estimada", $this->fecha_devolucion_estimada);
         $stmt->bindParam(":estado", $this->estado);
