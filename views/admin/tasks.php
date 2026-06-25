@@ -8,7 +8,7 @@ include_once 'views/includes/header.php';
 <div class="page-header">
     <h1>Gestión de Tareas</h1>
     <!-- Este enlace requerirá una nueva acción y vista de formulario -->
-    <a href="/biblioteca-app/admin/createTask" class="btn btn-primary">Asignar Nueva Tarea</a>
+    <a href="<?php echo BASE_PATH; ?>/admin/createTask" class="btn btn-primary">Asignar Nueva Tarea</a>
 </div>
 
 <div class="table-container">

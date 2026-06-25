@@ -7,11 +7,11 @@ include_once 'views/includes/header.php';
 
 <div class="page-header">
     <h1><?php echo $page_title; ?></h1>
-    <a href="/biblioteca-app/admin/tasks" class="btn btn-secondary">Volver a la lista de tareas</a>
+    <a href="<?php echo BASE_PATH; ?>/admin/tasks" class="btn btn-secondary">Volver a la lista de tareas</a>
 </div>
 
 <div class="form-container">
-    <form action="/biblioteca-app/admin/createTask" method="post" id="task-form">
+    <form action="<?php echo BASE_PATH; ?>/admin/createTask" method="post" id="task-form">
 
         <div class="form-group">
             <label for="titulo">Título de la Tarea</label>

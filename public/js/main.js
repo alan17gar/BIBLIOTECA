@@ -48,6 +48,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // --- Menú Móvil ---
+    const menuToggle = document.getElementById('menu-toggle');
+    const mainNav = document.getElementById('main-nav');
+
+    if (menuToggle && mainNav) {
+        menuToggle.addEventListener('click', function() {
+            mainNav.classList.toggle('active');
+        });
+    }
+
     // --- Confirmación antes de eliminar ---
     // Aunque ya hay un `onclick` en el HTML, este es un enfoque más moderno y centralizado.
     // Lo dejamos comentado para no duplicar la funcionalidad, pero es una buena práctica.

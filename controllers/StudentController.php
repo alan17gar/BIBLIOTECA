@@ -80,7 +80,7 @@ class StudentController {
 
         if ($this->loan->create()) {
             // Préstamo exitoso
-            header("Location: /biblioteca-app/student/loans");
+            header("Location: " . BASE_PATH . "/student/loans");
         } else {
             // Error, probablemente no hay libros disponibles
             // Idealmente, manejar este error de forma más elegante
@@ -104,7 +104,7 @@ class StudentController {
             $this->task->respuesta = $_POST['respuesta'];
 
             if ($this->task->complete()) {
-                header("Location: /biblioteca-app/student/tasks");
+                header("Location: " . BASE_PATH . "/student/tasks");
                 exit;
             }
         }

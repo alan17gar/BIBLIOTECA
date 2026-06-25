@@ -10,12 +10,12 @@
 
     <!-- Scripts de JavaScript -->
     <!-- Se pueden agregar aquí los scripts globales -->
-    <script src="/biblioteca-app/public/js/main.js"></script>
+    <script src="<?php echo BASE_PATH; ?>/public/js/main.js"></script>
 
     <!-- Scripts específicos de la página (si es necesario) -->
     <?php if (isset($page_scripts)): ?>
         <?php foreach ($page_scripts as $script): ?>
-            <script src="/biblioteca-app/public/js/<?php echo $script; ?>"></script>
+            <script src="<?php echo BASE_PATH . '/public/js/' . $script; ?>"></script>
         <?php endforeach; ?>
     <?php endif; ?>
 

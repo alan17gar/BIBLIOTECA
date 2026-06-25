@@ -7,7 +7,7 @@ include_once 'views/includes/header.php';
 
 <div class="page-header">
     <h1>Juego de Memoria con Portadas</h1>
-    <a href="/biblioteca-app/student/games" class="btn btn-secondary">Volver al menú de juegos</a>
+    <a href="<?php echo BASE_PATH; ?>/student/games" class="btn btn-secondary">Volver al menú de juegos</a>
 </div>
 
 <div class="game-container" id="memory-container">

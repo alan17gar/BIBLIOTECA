@@ -34,9 +34,9 @@ class AuthController {
 
                 // Redirigir según el rol del usuario
                 if ($this->user->rol === 'admin') {
-                    header("Location: /biblioteca-app/admin");
+                    header("Location: " . BASE_PATH . "/admin");
                 } else {
-                    header("Location: /biblioteca-app/student");
+                    header("Location: " . BASE_PATH . "/student");
                 }
                 exit;
             } else {
@@ -65,7 +65,7 @@ class AuthController {
         session_destroy();
 
         // Redirigir al usuario a la página de login
-        header("Location: /biblioteca-app/auth/login");
+        header("Location: " . BASE_PATH . "/auth/login");
         exit;
     }
 
@@ -75,7 +75,7 @@ class AuthController {
     public static function requireAdmin() {
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
             // Si no es admin, redirigir al login
-            header("Location: /biblioteca-app/auth/login");
+            header("Location: " . BASE_PATH . "/auth/login");
             exit;
         }
     }
@@ -83,7 +83,7 @@ class AuthController {
     public static function requireStudent() {
         if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'student') {
             // Si no es estudiante, redirigir al login
-            header("Location: /biblioteca-app/auth/login");
+            header("Location: " . BASE_PATH . "/auth/login");
             exit;
         }
     }

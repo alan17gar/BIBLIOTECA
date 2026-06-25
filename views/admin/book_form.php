@@ -10,11 +10,11 @@ include_once 'views/includes/header.php';
 
 <div class="page-header">
     <h1><?php echo $page_title; ?></h1>
-    <a href="/biblioteca-app/admin/books" class="btn btn-secondary">Volver a la lista</a>
+    <a href="<?php echo BASE_PATH; ?>/admin/books" class="btn btn-secondary">Volver a la lista</a>
 </div>
 
 <div class="form-container">
-    <form action="<?php echo $is_edit ? '/biblioteca-app/admin/editBook/' . $this->book->id : '/biblioteca-app/admin/createBook'; ?>" method="post" enctype="multipart/form-data" id="book-form">
+    <form action="<?php echo $is_edit ? BASE_PATH . '/admin/editBook/' . $this->book->id : BASE_PATH . '/admin/createBook'; ?>" method="post" enctype="multipart/form-data" id="book-form">
 
         <div class="form-group">
             <label for="titulo">Título</label>
