@@ -97,12 +97,15 @@ class AdminController {
         require 'views/admin/users.php';
     }
 
-    // MÉTODO CORREGIDO: Recibe las variables exactas de tu archivo user_form.php
+    // MÉTODO ACTUALIZADO: Captura también el nombre de usuario único para evitar el error 1062
     public function createUser() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Mapeo adaptado a 'nombre_completo' y 'correo' de tu formulario HTML
+            // Mapeo de campos del formulario
             $this->user->nombre = $_POST['nombre_completo']; 
             $this->user->email = $_POST['correo'];           
+            
+            // AGREGA ESTA LÍNEA: Captura el valor del input 'nombre_usuario'
+            $this->user->nombre_usuario = $_POST['nombre_usuario']; 
             
             // Se encripta la contraseña por seguridad
             $this->user->password = password_hash($_POST['password'], PASSWORD_BCRYPT);
