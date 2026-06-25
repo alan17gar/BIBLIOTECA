@@ -70,9 +70,22 @@ class AdminController {
     public function editBook($id) {
         $this->book->id = $id;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Lógica de actualización...
             $this->book->titulo = $_POST['titulo'];
-            // ... (resto de campos)
+            $this->book->autor = $_POST['autor'];
+            $this->book->isbn = $_POST['isbn'];
+            $this->book->categoria = $_POST['categoria'];
+            $this->book->sinopsis = $_POST['sinopsis'];
+            $this->book->cantidad_total = $_POST['cantidad_total'];
+            $this->book->ubicacion_fisica = $_POST['ubicacion_fisica'];
+
+            // Manejo opcional de archivos nuevos en la edición
+            if (isset($_FILES['portada']) && $_FILES['portada']['error'] == 0) {
+                $this->book->portada = $this->uploadFile('portada', 'uploads/covers/');
+            }
+            if (isset($_FILES['pdf']) && $_FILES['pdf']['error'] == 0) {
+                $this->book->pdf_ruta = $this->uploadFile('pdf', 'uploads/pdfs/');
+            }
+
             if ($this->book->update()) {
                 header("Location: " . BASE_PATH . "/admin/books");
                 exit;
@@ -97,17 +110,12 @@ class AdminController {
         require 'views/admin/users.php';
     }
 
-    // MÉTODO ACTUALIZADO: Captura también el nombre de usuario único para evitar el error 1062
     public function createUser() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Mapeo de campos del formulario
-            $this->user->nombre = $_POST['nombre_completo']; 
-            $this->user->email = $_POST['correo'];           
-            
-            // AGREGA ESTA LÍNEA: Captura el valor del input 'nombre_usuario'
+            // Sincronizado con las variables exactas de user_form.php y tu tabla de la BD
+            $this->user->nombre_completo = $_POST['nombre_completo']; 
             $this->user->nombre_usuario = $_POST['nombre_usuario']; 
-            
-            // Se encripta la contraseña por seguridad
+            $this->user->correo = $_POST['correo'];           
             $this->user->password = password_hash($_POST['password'], PASSWORD_BCRYPT);
             $this->user->rol = $_POST['rol']; 
 
@@ -116,7 +124,44 @@ class AdminController {
                 exit;
             }
         }
-        require 'views/admin/user_form.php'; // Carga el formulario de usuarios
+        require 'views/admin/user_form.php';
+    }
+
+    public function editUser($id) {
+        $this->user->id = $id;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->user->nombre_completo = $_POST['nombre_completo'];
+            $this->user->nombre_usuario = $_POST['nombre_usuario'];
+            $this->user->correo = $_POST['correo'];
+            $this->user->rol = $_POST['rol'];
+
+            // Actualizar contraseña solo si el admin escribió una nueva
+            if (!empty($_POST['password'])) {
+                $this->user->password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+            }
+
+            if ($this->user->update()) {
+                header("Location: " . BASE_PATH . "/admin/users");
+                exit;
+            }
+        } else {
+            $this->user->readOne();
+            require 'views/admin/user_form.php';
+        }
+    }
+
+    public function deleteUser($id) {
+        // Protección extra: evitar que un admin borre su propia cuenta activa en la sesión
+        if ($_SESSION['user_id'] != $id) {
+            $this->user->id = $id;
+            if ($this->user->delete()) {
+                header("Location: " . BASE_PATH . "/admin/users");
+                exit;
+            }
+        } else {
+            header("Location: " . BASE_PATH . "/admin/users");
+            exit;
+        }
     }
 
     // --- Gestión de Préstamos ---
@@ -141,7 +186,6 @@ class AdminController {
 
     public function createTask() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Procesar el formulario enviado
             $this->task->titulo = $_POST['titulo'];
             $this->task->descripcion = $_POST['descripcion'];
             $this->task->usuario_asignado_id = $_POST['usuario_asignado_id'];
@@ -149,15 +193,12 @@ class AdminController {
             $this->task->fecha_limite = $_POST['fecha_limite'];
 
             if ($this->task->create()) {
-                // Redirigir a la lista de tareas si se crea con éxito
                 header("Location: " . BASE_PATH . "/admin/tasks");
                 exit;
             } else {
-                // Manejar error
                 echo "Error al crear la tarea.";
             }
         } else {
-            // Mostrar el formulario de creación
             $students = $this->user->readAll(); 
             $books = $this->book->readAll();
 
