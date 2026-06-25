@@ -18,7 +18,7 @@ include_once 'views/includes/header.php';
         </div>
         <h3 class="game-card-title">Quiz de Comprensión</h3>
         <p class="game-card-description">Responde preguntas sobre los libros que has leído.</p>
-        <a href="/biblioteca-app/student/games/quiz" class="btn btn-primary">Jugar Ahora</a>
+        <a href="<?php echo BASE_PATH; ?>/student/games/quiz" class="btn btn-primary">Jugar Ahora</a>
     </div>
 
     <div class="game-card">
@@ -28,7 +28,7 @@ include_once 'views/includes/header.php';
         </div>
         <h3 class="game-card-title">Memoria de Portadas</h3>
         <p class="game-card-description">Encuentra los pares de portadas de libros.</p>
-        <a href="/biblioteca-app/student/games/memory" class="btn btn-primary">Jugar Ahora</a>
+        <a href="<?php echo BASE_PATH; ?>/student/games/memory" class="btn btn-primary">Jugar Ahora</a>
     </div>
 </div>
 

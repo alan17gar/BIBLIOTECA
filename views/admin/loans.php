@@ -37,7 +37,7 @@ include_once 'views/includes/header.php';
                     echo "<td><span class='status " . $status_class . "'>" . htmlspecialchars($estado) . "</span></td>";
                     echo "<td class='actions'>";
                     if ($estado == 'prestado' || $estado == 'retrasado') {
-                        echo "<a href='/biblioteca-app/admin/returnLoan/{$id}' class='btn btn-sm btn-success'>Marcar como Devuelto</a>";
+                        echo "<a href='" . BASE_PATH . "/admin/returnLoan/{$id}' class='btn btn-sm btn-success'>Marcar como Devuelto</a>";
                         // Botón de renovar podría añadirse aquí
                     } else {
                         echo "N/A";

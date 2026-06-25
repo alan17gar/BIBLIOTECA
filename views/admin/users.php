@@ -8,7 +8,7 @@ include_once 'views/includes/header.php';
 <div class="page-header">
     <h1>Gestión de Usuarios</h1>
     <!-- El enlace para crear usuario apuntará a una acción que aún no he implementado en el controlador -->
-    <a href="/biblioteca-app/admin/createUser" class="btn btn-primary">
+    <a href="<?php echo BASE_PATH; ?>/admin/createUser" class="btn btn-primary">
         Añadir Nuevo Usuario
     </a>
 </div>
@@ -39,10 +39,10 @@ include_once 'views/includes/header.php';
                     echo "<td>" . htmlspecialchars($rol) . "</td>";
                     echo "<td>" . date("d/m/Y", strtotime($fecha_creacion)) . "</td>";
                     echo "<td class='actions'>";
-                    echo "<a href='/biblioteca-app/admin/editUser/{$id}' class='btn btn-sm btn-warning'>Editar</a>";
+                    echo "<a href='" . BASE_PATH . "/admin/editUser/{$id}' class='btn btn-sm btn-warning'>Editar</a>";
                     // Evitar que el admin se borre a sí mismo
                     if ($_SESSION['user_id'] != $id) {
-                        echo "<a href='/biblioteca-app/admin/deleteUser/{$id}' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro?\");'>Eliminar</a>";
+                        echo "<a href='" . BASE_PATH . "/admin/deleteUser/{$id}' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro?\");'>Eliminar</a>";
                     }
                     echo "</td>";
                     echo "</tr>";

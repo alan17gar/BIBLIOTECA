@@ -60,7 +60,7 @@ class AdminController {
             $this->book->pdf_ruta = $this->uploadFile('pdf', 'uploads/pdfs/');
 
             if ($this->book->create()) {
-                header("Location: /biblioteca-app/admin/books");
+                header("Location: " . BASE_PATH . "/admin/books");
                 exit;
             }
         }
@@ -74,7 +74,7 @@ class AdminController {
             $this->book->titulo = $_POST['titulo'];
             // ... (resto de campos)
             if ($this->book->update()) {
-                header("Location: /biblioteca-app/admin/books");
+                header("Location: " . BASE_PATH . "/admin/books");
                 exit;
             }
         } else {
@@ -86,7 +86,7 @@ class AdminController {
     public function deleteBook($id) {
         $this->book->id = $id;
         if ($this->book->delete()) {
-            header("Location: /biblioteca-app/admin/books");
+            header("Location: " . BASE_PATH . "/admin/books");
             exit;
         }
     }
@@ -108,7 +108,7 @@ class AdminController {
     public function returnLoan($id) {
         $this->loan->id = $id;
         if ($this->loan->returnBook()) {
-            header("Location: /biblioteca-app/admin/loans");
+            header("Location: " . BASE_PATH . "/admin/loans");
             exit;
         }
     }
@@ -130,7 +130,7 @@ class AdminController {
 
             if ($this->task->create()) {
                 // Redirigir a la lista de tareas si se crea con éxito
-                header("Location: /biblioteca-app/admin/tasks");
+                header("Location: " . BASE_PATH . "/admin/tasks");
                 exit;
             } else {
                 // Manejar error

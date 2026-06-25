@@ -12,7 +12,7 @@ include_once 'views/includes/header.php';
 
 <!-- Barra de búsqueda -->
 <div class="search-bar-container">
-    <form action="/biblioteca-app/student/books" method="get" class="search-form">
+    <form action="<?php echo BASE_PATH; ?>/student/books" method="get" class="search-form">
         <input type="text" name="search" placeholder="Buscar por título, autor o categoría..." class="search-input" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
         <button type="submit" class="btn btn-primary">Buscar</button>
     </form>
@@ -42,10 +42,10 @@ include_once 'views/includes/header.php';
                     <div class="book-card-actions">
                         <!-- El botón de solicitar podría llevar a una página de detalles o solicitar directamente -->
                         <?php if ($cantidad_disponible > 0): ?>
-                            <a href="/biblioteca-app/student/requestLoan/<?php echo $id; ?>" class="btn btn-sm btn-success" onclick="return confirm('¿Confirmas que quieres solicitar este libro?');">Solicitar Préstamo</a>
+                            <a href="<?php echo BASE_PATH . '/student/requestLoan/' . $id; ?>" class="btn btn-sm btn-success" onclick="return confirm('¿Confirmas que quieres solicitar este libro?');">Solicitar Préstamo</a>
                         <?php endif; ?>
                         <!-- Un botón para ver más detalles podría ser útil -->
-                        <!-- <a href="/biblioteca-app/books/details/<?php echo $id; ?>" class="btn btn-sm btn-info">Ver Detalles</a> -->
+                        <!-- <a href="<?php echo BASE_PATH . '/books/details/' . $id; ?>" class="btn btn-sm btn-info">Ver Detalles</a> -->
                     </div>
                 </div>
             </div>

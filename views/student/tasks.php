@@ -31,7 +31,7 @@ include_once 'views/includes/header.php';
 
                 <?php if ($estado === 'pendiente'): ?>
                     <div class="task-response-form">
-                        <form action="/biblioteca-app/student/completeTask/<?php echo $id; ?>" method="post">
+                        <form action="<?php echo BASE_PATH . '/student/completeTask/' . $id; ?>" method="post">
                             <div class="form-group">
                                 <label for="respuesta_<?php echo $id; ?>">Tu respuesta:</label>
                                 <textarea name="respuesta" id="respuesta_<?php echo $id; ?>" class="form-control" rows="3" required></textarea>

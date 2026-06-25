@@ -20,7 +20,7 @@ include_once 'views/includes/header.php';
             <p>Préstamos Activos</p>
             <span><?php echo isset($active_loans_count) ? $active_loans_count : '0'; ?></span>
         </div>
-        <a href="/biblioteca-app/student/loans" class="stat-link">Ver mis préstamos</a>
+        <a href="<?php echo BASE_PATH; ?>/student/loans" class="stat-link">Ver mis préstamos</a>
     </div>
 
     <div class="stat-card">
@@ -32,7 +32,7 @@ include_once 'views/includes/header.php';
             <p>Tareas Pendientes</p>
             <span><?php echo isset($pending_tasks_count) ? $pending_tasks_count : '0'; ?></span>
         </div>
-        <a href="/biblioteca-app/student/tasks" class="stat-link">Ver mis tareas</a>
+        <a href="<?php echo BASE_PATH; ?>/student/tasks" class="stat-link">Ver mis tareas</a>
     </div>
 
     <div class="stat-card">
@@ -44,7 +44,7 @@ include_once 'views/includes/header.php';
             <p>Explorar Catálogo</p>
             <span>Buscar y solicitar</span>
         </div>
-        <a href="/biblioteca-app/student/books" class="stat-link">Buscar libros</a>
+        <a href="<?php echo BASE_PATH; ?>/student/books" class="stat-link">Buscar libros</a>
     </div>
 </div>
 
