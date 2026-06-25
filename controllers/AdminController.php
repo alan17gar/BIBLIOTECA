@@ -97,7 +97,23 @@ class AdminController {
         require 'views/admin/users.php';
     }
 
-    // ... (métodos para createUser, editUser, deleteUser similares a los de libros)
+    // NUEVO MÉTODO: Procesa la creación de un usuario
+    public function createUser() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Asignar datos del formulario al objeto usuario
+            $this->user->nombre = $_POST['nombre'];
+            $this->user->email = $_POST['email'];
+            // Se encripta la contraseña por seguridad antes de guardarla
+            $this->user->password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+            $this->user->rol = $_POST['rol']; 
+
+            if ($this->user->create()) {
+                header("Location: " . BASE_PATH . "/admin/users");
+                exit;
+            }
+        }
+        require 'views/admin/user_form.php'; // Carga el formulario de usuarios
+    }
 
     // --- Gestión de Préstamos ---
     public function loans() {
@@ -138,8 +154,7 @@ class AdminController {
             }
         } else {
             // Mostrar el formulario de creación
-            // Necesitamos pasarle la lista de estudiantes y libros a la vista
-            $students = $this->user->readAll(); // Asumimos que readAll() devuelve todos los usuarios
+            $students = $this->user->readAll(); 
             $books = $this->book->readAll();
 
             require 'views/admin/task_form.php';
@@ -160,18 +175,15 @@ class AdminController {
 
             // Definir las rutas del archivo
             $file_name = basename($_FILES[$file_input_name]["name"]);
-            $absolute_target_file = $absolute_target_dir . $file_name; // Ruta física real para el servidor
-            $db_saved_path = rtrim($target_dir, '/') . '/' . $file_name; // Ruta limpia relativa que se guardará en la BD
-
-            // Validaciones (tamaño, tipo, etc.)
-            // ...
+            $absolute_target_file = $absolute_target_dir . $file_name; 
+            $db_saved_path = rtrim($target_dir, '/') . '/' . $file_name; 
 
             // Mover el archivo usando la ruta absoluta requerida por Linux
             if (move_uploaded_file($_FILES[$file_input_name]["tmp_name"], $absolute_target_file)) {
-                return $db_saved_path; // Devuelve la ruta estructurada para tu base de datos
+                return $db_saved_path; 
             }
         }
-        return ""; // Devolver cadena vacía si no se subió archivo
+        return ""; 
     }
 }
 ?>
