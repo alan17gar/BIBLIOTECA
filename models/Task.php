@@ -12,7 +12,7 @@ class Task {
     public $usuario_asignado_id;
     public $libro_relacionado_id;
     public $fecha_asignacion;
-    public 'fecha_limite';
+    public $fecha_limite;
     public $estado; // 'pendiente', 'completada'
     public $respuesta; // Respuesta del estudiante a la tarea
 
