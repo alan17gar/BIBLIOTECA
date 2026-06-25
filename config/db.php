@@ -4,7 +4,7 @@
 class Database {
     // Parámetros de conexión a la base de datos
     // Usar las credenciales estándar de XAMPP/WAMP
-    private $host = 'localhost';
+    private $host = '127.0.0.1';
     private $db_name = 'biblioteca_app';
     private $username = 'root';
     private $password = ''; // Por defecto, la contraseña de root en XAMPP/WAMP es vacía
