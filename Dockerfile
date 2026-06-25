@@ -1,12 +1,15 @@
 FROM php:8.2-apache
 
-# Habilitar el módulo de reescritura de Apache (necesario para el archivo .htaccess)
+# 1. Instalar y activar el driver de MySQL (PDO) para solucionar el error de conexión
+RUN docker-php-ext-install pdo pdo_mysql
+
+# 2. Habilitar el módulo de reescritura de Apache para las rutas internas
 RUN a2enmod rewrite
 
-# Dar permisos correctos para que Apache pueda leer la raíz del proyecto sin dar error 403
+# 3. Dar permisos totales para que cargue tanto la raíz como la carpeta public (CSS/JS)
 RUN sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-# Copiar todo el proyecto a la carpeta del servidor
+# 4. Copiar tu proyecto al servidor
 COPY . /var/www/html/
 
 EXPOSE 80
