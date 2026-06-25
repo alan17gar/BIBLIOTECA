@@ -10,7 +10,8 @@ class Loan {
     // Propiedades del objeto Préstamo
     public $id;
     public $libro_id;
-    public $usuario_id;
+    public $estudiante_id;
+    public $ubicacion_lectura;
     public $fecha_prestamo;
     public $fecha_devolucion_estimada;
     public $fecha_devolucion_real;
@@ -35,7 +36,7 @@ class Loan {
         // Si hay libros, proceder con el préstamo
         $query = "INSERT INTO " . $this->table_name . "
                   SET
-                    libro_id=:libro_id, usuario_id=:usuario_id,
+                    libro_id=:libro_id, estudiante_id=:estudiante_id, ubicacion_lectura=:ubicacion_lectura,
                     fecha_prestamo=:fecha_prestamo, fecha_devolucion_estimada=:fecha_devolucion_estimada,
                     estado=:estado, multa=:multa";
 
@@ -43,7 +44,8 @@ class Loan {
 
         // Sanitizar datos
         $this->libro_id = htmlspecialchars(strip_tags($this->libro_id));
-        $this->usuario_id = htmlspecialchars(strip_tags($this->usuario_id));
+        $this->estudiante_id = htmlspecialchars(strip_tags($this->estudiante_id));
+        $this->ubicacion_lectura = htmlspecialchars(strip_tags($this->ubicacion_lectura));
         $this->estado = htmlspecialchars(strip_tags($this->estado));
         $this->multa = htmlspecialchars(strip_tags($this->multa));
 
@@ -54,7 +56,8 @@ class Loan {
 
         // Vincular parámetros
         $stmt->bindParam(":libro_id", $this->libro_id);
-        $stmt->bindParam(":usuario_id", $this->usuario_id);
+        $stmt->bindParam(":estudiante_id", $this->estudiante_id);
+        $stmt->bindParam(":ubicacion_lectura", $this->ubicacion_lectura);
         $stmt->bindParam(":fecha_prestamo", $this->fecha_prestamo);
         $stmt->bindParam(":fecha_devolucion_estimada", $this->fecha_devolucion_estimada);
         $stmt->bindParam(":estado", $this->estado);
@@ -69,14 +72,14 @@ class Loan {
         return false;
     }
 
-    // Leer todos los préstamos (con información del libro y usuario)
+    // Leer todos los préstamos (con información del libro y estudiante)
     public function readAll() {
         $query = "SELECT
-                    p.id, p.libro_id, p.usuario_id, p.fecha_prestamo, p.fecha_devolucion_estimada, p.fecha_devolucion_real, p.estado, p.multa,
-                    l.titulo as libro_titulo, u.nombre_completo as estudiante_nombre
+                    p.id, p.libro_id, p.estudiante_id, p.ubicacion_lectura, p.fecha_prestamo, p.fecha_devolucion_estimada, p.fecha_devolucion_real, p.estado, p.multa,
+                    l.titulo as libro_titulo, e.nombre_completo as estudiante_nombre, e.cedula as estudiante_cedula, e.anio_secundaria as estudiante_anio
                   FROM " . $this->table_name . " p
                   LEFT JOIN libros l ON p.libro_id = l.id
-                  LEFT JOIN usuarios u ON p.usuario_id = u.id
+                  LEFT JOIN estudiantes e ON p.estudiante_id = e.id
                   ORDER BY p.fecha_prestamo DESC";
 
         $stmt = $this->conn->prepare($query);

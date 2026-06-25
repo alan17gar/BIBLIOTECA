@@ -51,3 +51,4 @@
 
     <main class="main-content">
         <div class="container">
+            <div id="notification-container" style="position: fixed; top: 100px; right: 2rem; z-index: 1001; display: flex; flex-direction: column; gap: 1rem;"></div>

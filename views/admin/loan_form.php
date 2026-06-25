@@ -36,16 +36,26 @@ include_once 'views/includes/header.php';
         </div>
 
         <div class="form-group">
-            <label for="usuario_id">Estudiante (Usuario Registrado)</label>
-            <select name="usuario_id" id="usuario_id" class="form-control" required>
+            <label for="estudiante_id">Estudiante</label>
+            <select name="estudiante_id" id="estudiante_id" class="form-control" required>
                 <option value="">Seleccione un estudiante</option>
                 <?php
-                if (isset($users)) {
-                    while ($u = $users->fetch(PDO::FETCH_ASSOC)) {
-                        echo "<option value='{$u['id']}'>" . htmlspecialchars($u['nombre_completo']) . " (" . htmlspecialchars($u['nombre_usuario']) . ")</option>";
+                if (isset($students)) {
+                    while ($s = $students->fetch(PDO::FETCH_ASSOC)) {
+                        echo "<option value='{$s['id']}'>" . htmlspecialchars($s['nombre_completo']) . " (C.I. " . htmlspecialchars($s['cedula']) . ")</option>";
                     }
                 }
                 ?>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="ubicacion_lectura">Ubicación de Lectura</label>
+            <select name="ubicacion_lectura" id="ubicacion_lectura" class="form-control" required>
+                <option value="">Seleccione ubicación</option>
+                <option value="Biblioteca">Biblioteca</option>
+                <option value="Aula con Profesor">Aula con Profesor</option>
+                <option value="Hogar">Hogar</option>
             </select>
         </div>
 

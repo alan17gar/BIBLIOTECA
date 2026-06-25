@@ -19,10 +19,11 @@ include_once 'views/includes/header.php';
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             Añadir Nuevo Libro
         </a>
-        <button class="btn btn-info btn-sm" onclick="alert('Exportando a PDF...')">PDF</button>
-        <button class="btn btn-success btn-sm" onclick="alert('Exportando a Excel...')">Excel</button>
+        <a href="<?php echo BASE_PATH; ?>/admin/exportBooksPDF" class="btn btn-info btn-sm" onclick="showToast('Iniciando descarga de PDF...', 'info')">PDF</a>
+        <a href="<?php echo BASE_PATH; ?>/admin/exportBooksExcel" class="btn btn-success btn-sm" onclick="showToast('Iniciando descarga de Excel...', 'success')">Excel</a>
     </div>
 </div>
+
 
 <div class="search-filters glass-card" style="padding: 1.5rem; margin-bottom: 2rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
     <form action="<?php echo BASE_PATH; ?>/admin/books" method="get" style="display: flex; gap: 0.5rem; flex-grow: 1;">

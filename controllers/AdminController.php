@@ -5,6 +5,7 @@
 require_once 'models/User.php';
 require_once 'models/Book.php';
 require_once 'models/Loan.php';
+require_once 'models/Student.php';
 require_once 'controllers/AuthController.php'; // Para usar los checks de rol
 
 class AdminController {
@@ -12,12 +13,14 @@ class AdminController {
     private $user;
     private $book;
     private $loan;
+    private $student;
 
     public function __construct($db) {
         $this->db = $db;
         $this->user = new User($this->db);
         $this->book = new Book($this->db);
         $this->loan = new Loan($this->db);
+        $this->student = new Student($this->db);
 
         // Proteger todas las acciones del admin
         AuthController::requireAdmin();
@@ -171,7 +174,8 @@ class AdminController {
     public function createLoan() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->loan->libro_id = $_POST['libro_id'];
-            $this->loan->usuario_id = $_POST['usuario_id'];
+            $this->loan->estudiante_id = $_POST['estudiante_id'];
+            $this->loan->ubicacion_lectura = $_POST['ubicacion_lectura'];
             $this->loan->estado = 'prestado';
             $this->loan->multa = 0;
 
@@ -184,7 +188,7 @@ class AdminController {
         }
 
         $books = $this->book->readAll();
-        $users = $this->user->readAll();
+        $students = $this->student->readAll();
         require 'views/admin/loan_form.php';
     }
 
@@ -194,6 +198,48 @@ class AdminController {
             header("Location: " . BASE_PATH . "/admin/loans?returned=1");
             exit;
         }
+    }
+
+    // --- Métodos de Exportación ---
+
+    public function exportBooksPDF() {
+        ob_clean();
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="libros_inventario.pdf"');
+        echo "%PDF-1.4\n1 0 obj\n<< /Title (Inventario de Libros) /Creator (Biblioteca App) >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF";
+        exit;
+    }
+
+    public function exportBooksExcel() {
+        ob_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename="libros_inventario.xls"');
+        echo "Título\tAutor\tISBN\tStock\n";
+        $stmt = $this->book->readAll();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo "{$row['titulo']}\t{$row['autor']}\t{$row['isbn']}\t{$row['cantidad_disponible']}\n";
+        }
+        exit;
+    }
+
+    public function exportLoansPDF() {
+        ob_clean();
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="prestamos_historial.pdf"');
+        echo "%PDF-1.4\n1 0 obj\n<< /Title (Historial de Prestamos) >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF";
+        exit;
+    }
+
+    public function exportLoansExcel() {
+        ob_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename="prestamos_historial.xls"');
+        echo "Libro\tEstudiante\tCédula\tUbicación\tFecha\n";
+        $stmt = $this->loan->readAll();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo "{$row['libro_titulo']}\t{$row['estudiante_nombre']}\t{$row['estudiante_cedula']}\t{$row['ubicacion_lectura']}\t{$row['fecha_prestamo']}\n";
+        }
+        exit;
     }
 
     // --- Función auxiliar para subir archivos ---

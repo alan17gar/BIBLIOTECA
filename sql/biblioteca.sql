@@ -40,12 +40,25 @@ CREATE TABLE `libros` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Estructura de la tabla `estudiantes`
+--
+CREATE TABLE `estudiantes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cedula` varchar(20) NOT NULL,
+  `nombre_completo` varchar(100) NOT NULL,
+  `anio_secundaria` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `cedula` (`cedula`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
 -- Estructura de la tabla `prestamos`
 --
 CREATE TABLE `prestamos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `libro_id` int(11) NOT NULL,
-  `usuario_id` int(11) NOT NULL,
+  `estudiante_id` int(11) NOT NULL,
+  `ubicacion_lectura` varchar(100) DEFAULT NULL,
   `fecha_prestamo` timestamp NOT NULL DEFAULT current_timestamp(),
   `fecha_devolucion_estimada` timestamp NOT NULL,
   `fecha_devolucion_real` timestamp NULL DEFAULT NULL,
@@ -53,9 +66,9 @@ CREATE TABLE `prestamos` (
   `multa` decimal(10,2) DEFAULT 0.00,
   PRIMARY KEY (`id`),
   KEY `libro_id` (`libro_id`),
-  KEY `usuario_id` (`usuario_id`),
+  KEY `estudiante_id` (`estudiante_id`),
   CONSTRAINT `prestamos_ibfk_1` FOREIGN KEY (`libro_id`) REFERENCES `libros` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `prestamos_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+  CONSTRAINT `prestamos_ibfk_2` FOREIGN KEY (`estudiante_id`) REFERENCES `estudiantes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
