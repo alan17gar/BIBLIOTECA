@@ -37,11 +37,5 @@
 
     <main class="main-content">
         <div class="container">
-            ```
 
----
-
-### 🚀 Último paso:
-Guarda el archivo en GitHub, espera a que Render ponga el estado en verde (**Live**) y recarga tu página web presionando **`Ctrl + F5`** (para limpiar los archivos viejos de la memoria del navegador). 
-
-¡Con esto tu sistema va a cargar tu diseño original por completo y se va a ver hermoso! Me avisas en cuanto lo hagas para celebrar.
+            
