@@ -149,14 +149,26 @@ class AdminController {
     // --- Función auxiliar para subir archivos ---
     private function uploadFile($file_input_name, $target_dir) {
         if (isset($_FILES[$file_input_name]) && $_FILES[$file_input_name]['error'] == 0) {
-            $target_file = $target_dir . basename($_FILES[$file_input_name]["name"]);
-            $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+            
+            // CONVERSIÓN A RUTA ABSOLUTA: Asegura que funcione perfectamente en Render (Linux)
+            $absolute_target_dir = $_SERVER['DOCUMENT_ROOT'] . '/' . ltrim($target_dir, '/');
+            
+            // SEGURIDAD AUTOMÁTICA: Si la carpeta no existe en el servidor, PHP la crea con permisos de escritura
+            if (!file_exists($absolute_target_dir)) {
+                mkdir($absolute_target_dir, 0777, true);
+            }
+
+            // Definir las rutas del archivo
+            $file_name = basename($_FILES[$file_input_name]["name"]);
+            $absolute_target_file = $absolute_target_dir . $file_name; // Ruta física real para el servidor
+            $db_saved_path = rtrim($target_dir, '/') . '/' . $file_name; // Ruta limpia relativa que se guardará en la BD
 
             // Validaciones (tamaño, tipo, etc.)
             // ...
 
-            if (move_uploaded_file($_FILES[$file_input_name]["tmp_name"], $target_file)) {
-                return $target_file; // Devolver la ruta del archivo
+            // Mover el archivo usando la ruta absoluta requerida por Linux
+            if (move_uploaded_file($_FILES[$file_input_name]["tmp_name"], $absolute_target_file)) {
+                return $db_saved_path; // Devuelve la ruta estructurada para tu base de datos
             }
         }
         return ""; // Devolver cadena vacía si no se subió archivo
