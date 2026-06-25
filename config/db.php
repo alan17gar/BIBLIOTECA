@@ -1,35 +1,34 @@
 <?php
-// config/db.php - Archivo de configuración de la base de datos
+// config/db.php - Archivo de configuración de la base de datos en la nube
 
 class Database {
-    // Parámetros de conexión a la base de datos
-    // Usar las credenciales estándar de XAMPP/WAMP
-    private $host = '127.0.0.1';
-    private $db_name = 'biblioteca_app';
-    private $username = 'root';
-    private $password = ''; // Por defecto, la contraseña de root en XAMPP/WAMP es vacía
+    // Parámetros de conexión reales obtenidos de Clever Cloud
+    private $host = 'btguvsqpmzkocvxuyht7-mysql.services.clever-cloud.com';
+    private $db_name = 'btguvsqpmzkocvxuyht7';
+    private $username = 'u98s78lxcviah7yi';
+    private $password = 'szIssCSvmypbtG317rny';
     private $conn;
 
     // Método para obtener la conexión a la base de datos
     public function getConnection() {
-        $this->conn = null; // Reiniciar la conexión
+        $this->conn = null;
 
         try {
-            // Crear una nueva instancia de PDO
+            // Crear una nueva instancia de PDO usando la base de datos remota
             $this->conn = new PDO(
                 'mysql:host=' . $this->host . ';dbname=' . $this->db_name . ';charset=utf8',
                 $this->username,
                 $this->password
             );
 
-            // Establecer el modo de error de PDO a excepción para un mejor manejo de errores
+            // Establecer el modo de error de PDO a excepción
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // Deshabilitar emulación de preparaciones para usar preparaciones nativas de MySQL
+            // Deshabilitar emulación de preparaciones para seguridad nativa
             $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
         } catch(PDOException $exception) {
-            // Si la conexión falla, mostrar un mensaje de error
+            // Si la conexión falla, mostrar el mensaje de error
             echo 'Error de conexión: ' . $exception->getMessage();
         }
 
