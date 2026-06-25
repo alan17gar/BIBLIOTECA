@@ -1,4 +1,5 @@
 <?php
+ob_start();
 // controllers/AdminController.php - Controlador para el panel de administración
 
 // Incluir los modelos necesarios
@@ -203,7 +204,7 @@ class AdminController {
     // --- Métodos de Exportación ---
 
     public function exportBooksPDF() {
-        ob_clean();
+        if (ob_get_length()) ob_end_clean();
         header('Content-Type: application/pdf');
         header('Content-Disposition: attachment; filename="libros_inventario.pdf"');
         echo "%PDF-1.4\n1 0 obj\n<< /Title (Inventario de Libros) /Creator (Biblioteca App) >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF";
@@ -211,7 +212,7 @@ class AdminController {
     }
 
     public function exportBooksExcel() {
-        ob_clean();
+        if (ob_get_length()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="libros_inventario.xls"');
         echo "Título\tAutor\tISBN\tStock\n";
@@ -223,7 +224,7 @@ class AdminController {
     }
 
     public function exportLoansPDF() {
-        ob_clean();
+        if (ob_get_length()) ob_end_clean();
         header('Content-Type: application/pdf');
         header('Content-Disposition: attachment; filename="prestamos_historial.pdf"');
         echo "%PDF-1.4\n1 0 obj\n<< /Title (Historial de Prestamos) >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF";
@@ -231,13 +232,16 @@ class AdminController {
     }
 
     public function exportLoansExcel() {
-        ob_clean();
+        if (ob_get_length()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="prestamos_historial.xls"');
         echo "Libro\tEstudiante\tCédula\tUbicación\tFecha\n";
         $stmt = $this->loan->readAll();
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            echo "{$row['libro_titulo']}\t{$row['estudiante_nombre']}\t{$row['estudiante_cedula']}\t{$row['ubicacion_lectura']}\t{$row['fecha_prestamo']}\n";
+            // Ajustar nombres de campos según el nuevo readAll()
+            $nombre = isset($row['nombre_estudiante']) ? $row['nombre_estudiante'] : '-';
+            $cedula = isset($row['cedula']) ? $row['cedula'] : '-';
+            echo "{$row['libro_titulo']}\t{$nombre}\t{$cedula}\t{$row['ubicacion_lectura']}\t{$row['fecha_prestamo']}\n";
         }
         exit;
     }

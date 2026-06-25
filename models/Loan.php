@@ -76,7 +76,7 @@ class Loan {
     public function readAll() {
         $query = "SELECT
                     p.id, p.libro_id, p.estudiante_id, p.ubicacion_lectura, p.fecha_prestamo, p.fecha_devolucion_estimada, p.fecha_devolucion_real, p.estado, p.multa,
-                    l.titulo as libro_titulo, e.nombre_completo as estudiante_nombre, e.cedula as estudiante_cedula, e.anio_secundaria as estudiante_anio
+                    l.titulo as libro_titulo, e.nombre_completo as nombre_estudiante, e.cedula, e.anio_secundaria
                   FROM " . $this->table_name . " p
                   LEFT JOIN libros l ON p.libro_id = l.id
                   LEFT JOIN estudiantes e ON p.estudiante_id = e.id
