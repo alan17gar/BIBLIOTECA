@@ -97,13 +97,14 @@ class AdminController {
         require 'views/admin/users.php';
     }
 
-    // NUEVO MÉTODO: Procesa la creación de un usuario
+    // MÉTODO CORREGIDO: Recibe las variables exactas de tu archivo user_form.php
     public function createUser() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Asignar datos del formulario al objeto usuario
-            $this->user->nombre = $_POST['nombre'];
-            $this->user->email = $_POST['email'];
-            // Se encripta la contraseña por seguridad antes de guardarla
+            // Mapeo adaptado a 'nombre_completo' y 'correo' de tu formulario HTML
+            $this->user->nombre = $_POST['nombre_completo']; 
+            $this->user->email = $_POST['correo'];           
+            
+            // Se encripta la contraseña por seguridad
             $this->user->password = password_hash($_POST['password'], PASSWORD_BCRYPT);
             $this->user->rol = $_POST['rol']; 
 
