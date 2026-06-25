@@ -10,7 +10,8 @@ class Task {
     public $descripcion;
     public $usuario_asignado_id;
     public $libro_relacionado_id;
-    public $fecha_asignacion; public $fecha_limite;
+    public $fecha_asignacion; 
+    public "fecha_limite";
     public $estado;
     public $respuesta;
     public function __construct($db) {
