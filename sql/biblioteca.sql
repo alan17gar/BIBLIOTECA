@@ -45,11 +45,7 @@ CREATE TABLE `libros` (
 CREATE TABLE `prestamos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `libro_id` int(11) NOT NULL,
-  `usuario_id` int(11) DEFAULT NULL,
-  `nombre_estudiante` varchar(100) DEFAULT NULL,
-  `codigo_prestamo` varchar(50) DEFAULT NULL,
-  `anio_estudiante` varchar(20) DEFAULT NULL,
-  `ubicacion_lectura` varchar(100) DEFAULT NULL,
+  `usuario_id` int(11) NOT NULL,
   `fecha_prestamo` timestamp NOT NULL DEFAULT current_timestamp(),
   `fecha_devolucion_estimada` timestamp NOT NULL,
   `fecha_devolucion_real` timestamp NULL DEFAULT NULL,
@@ -59,7 +55,7 @@ CREATE TABLE `prestamos` (
   KEY `libro_id` (`libro_id`),
   KEY `usuario_id` (`usuario_id`),
   CONSTRAINT `prestamos_ibfk_1` FOREIGN KEY (`libro_id`) REFERENCES `libros` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `prestamos_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL
+  CONSTRAINT `prestamos_ibfk_2` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --

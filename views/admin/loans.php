@@ -36,8 +36,7 @@ include_once 'views/includes/header.php';
         <thead>
             <tr>
                 <th>Libro</th>
-                <th>Estudiante / Código</th>
-                <th>Año / Ubicación</th>
+                <th>Estudiante</th>
                 <th>Fecha Préstamo</th>
                 <th>Estado</th>
                 <th>Acciones</th>
@@ -50,13 +49,9 @@ include_once 'views/includes/header.php';
                     extract($row);
                     $status_class = 'status-' . htmlspecialchars($estado);
 
-                    // Priorizar nombre manual sobre usuario del sistema
-                    $display_name = !empty($nombre_estudiante) ? $nombre_estudiante : $sistema_usuario_nombre;
-
                     echo "<tr>";
                     echo "<td><strong>" . htmlspecialchars($libro_titulo) . "</strong></td>";
-                    echo "<td>" . htmlspecialchars($display_name) . "<br><small>" . htmlspecialchars($codigo_prestamo) . "</small></td>";
-                    echo "<td>" . htmlspecialchars($anio_estudiante) . "<br><small>" . htmlspecialchars($ubicacion_lectura) . "</small></td>";
+                    echo "<td>" . htmlspecialchars($estudiante_nombre) . "</td>";
                     echo "<td>" . date("d/m/Y", strtotime($fecha_prestamo)) . "</td>";
                     echo "<td><span class='status " . $status_class . "'>" . htmlspecialchars($estado) . "</span></td>";
                     echo "<td class='actions'>";

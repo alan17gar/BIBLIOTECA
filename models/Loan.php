@@ -11,10 +11,6 @@ class Loan {
     public $id;
     public $libro_id;
     public $usuario_id;
-    public $nombre_estudiante;
-    public $codigo_prestamo;
-    public $anio_estudiante;
-    public $ubicacion_lectura;
     public $fecha_prestamo;
     public $fecha_devolucion_estimada;
     public $fecha_devolucion_real;
@@ -28,7 +24,6 @@ class Loan {
     // --- Métodos del Modelo ---
 
     // Crear un nuevo préstamo
-   // Crear un nuevo préstamo
     public function create() {
         // Primero, verificar si hay libros disponibles
         $book = new Book($this->conn);
@@ -37,21 +32,18 @@ class Loan {
             return false; // No hay libros disponibles
         }
 
-        // Si hay libros, proceder con el préstamo usando solo campos reales de la BD
+        // Si hay libros, proceder con el préstamo
         $query = "INSERT INTO " . $this->table_name . "
                   SET
-                    libro_id=:libro_id, 
-                    usuario_id=:usuario_id,
-                    fecha_prestamo=:fecha_prestamo, 
-                    fecha_devolucion_estimada=:fecha_devolucion_estimada,
-                    estado=:estado, 
-                    multa=:multa";
+                    libro_id=:libro_id, usuario_id=:usuario_id,
+                    fecha_prestamo=:fecha_prestamo, fecha_devolucion_estimada=:fecha_devolucion_estimada,
+                    estado=:estado, multa=:multa";
 
         $stmt = $this->conn->prepare($query);
 
-        // Sanitizar datos esenciales
+        // Sanitizar datos
         $this->libro_id = htmlspecialchars(strip_tags($this->libro_id));
-        $this->usuario_id = !empty($this->usuario_id) ? htmlspecialchars(strip_tags($this->usuario_id)) : null;
+        $this->usuario_id = htmlspecialchars(strip_tags($this->usuario_id));
         $this->estado = htmlspecialchars(strip_tags($this->estado));
         $this->multa = htmlspecialchars(strip_tags($this->multa));
 
@@ -60,7 +52,7 @@ class Loan {
         // Por defecto, 15 días para devolver
         $this->fecha_devolucion_estimada = date('Y-m-d H:i:s', strtotime('+15 days'));
 
-        // Vincular parámetros reales
+        // Vincular parámetros
         $stmt->bindParam(":libro_id", $this->libro_id);
         $stmt->bindParam(":usuario_id", $this->usuario_id);
         $stmt->bindParam(":fecha_prestamo", $this->fecha_prestamo);
@@ -78,14 +70,10 @@ class Loan {
     }
 
     // Leer todos los préstamos (con información del libro y usuario)
-   // Leer todos los préstamos (con información del libro y usuario)
     public function readAll() {
         $query = "SELECT
-                    p.id, p.libro_id, p.usuario_id, 
-                    p.fecha_prestamo, p.fecha_devolucion_estimada, p.fecha_devolucion_real, p.estado, p.multa,
-                    l.titulo as libro_titulo, 
-                    u.nombre_usuario as sistema_usuario_nombre,
-                    u.nombre_completo as nombre_estudiante
+                    p.id, p.libro_id, p.usuario_id, p.fecha_prestamo, p.fecha_devolucion_estimada, p.fecha_devolucion_real, p.estado, p.multa,
+                    l.titulo as libro_titulo, u.nombre_completo as estudiante_nombre
                   FROM " . $this->table_name . " p
                   LEFT JOIN libros l ON p.libro_id = l.id
                   LEFT JOIN usuarios u ON p.usuario_id = u.id

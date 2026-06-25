@@ -171,11 +171,7 @@ class AdminController {
     public function createLoan() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->loan->libro_id = $_POST['libro_id'];
-            // CORRECCIÓN: Usar exactamente la variable de tu base de datos y de tu modelo
-            $this->loan->nombre_estudiante = $_POST['nombre_completo_estudiante'] ?? $_POST['nombre_estudiante'];
-            $this->loan->codigo_prestamo = $_POST['codigo_prestamo'];
-            $this->loan->anio_estudiante = $_POST['anio_estudiante'];
-            $this->loan->ubicacion_lectura = $_POST['ubicacion_lectura'];
+            $this->loan->usuario_id = $_POST['usuario_id'];
             $this->loan->estado = 'prestado';
             $this->loan->multa = 0;
 
@@ -188,19 +184,16 @@ class AdminController {
         }
 
         $books = $this->book->readAll();
+        $users = $this->user->readAll();
         require 'views/admin/loan_form.php';
     }
 
-    // CORRECCIÓN: Detiene la pantalla en blanco forzando el redireccionamiento pase lo que pase
     public function returnLoan($id) {
         $this->loan->id = $id;
         if ($this->loan->returnBook()) {
             header("Location: " . BASE_PATH . "/admin/loans?returned=1");
             exit;
         }
-        // Redirección de respaldo por seguridad
-        header("Location: " . BASE_PATH . "/admin/loans?error=1");
-        exit;
     }
 
     // --- Función auxiliar para subir archivos ---
@@ -209,11 +202,14 @@ class AdminController {
             $target_file = $target_dir . basename($_FILES[$file_input_name]["name"]);
             $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
+            // Validaciones (tamaño, tipo, etc.)
+            // ...
+
             if (move_uploaded_file($_FILES[$file_input_name]["tmp_name"], $target_file)) {
-                return $target_file;
+                return $target_file; // Devolver la ruta del archivo
             }
         }
-        return "";
+        return ""; // Devolver cadena vacía si no se subió archivo
     }
 }
 ?>

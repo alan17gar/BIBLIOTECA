@@ -35,42 +35,18 @@ include_once 'views/includes/header.php';
             </select>
         </div>
 
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-            <div class="form-group">
-                <label for="nombre_estudiante">Nombre del Estudiante</label>
-                <input type="text" id="nombre_estudiante" name="nombre_estudiante" class="form-control" required placeholder="Ej. Juan Pérez">
-            </div>
-
-            <div class="form-group">
-                <label for="codigo_prestamo">Código de Préstamo (Opcional)</label>
-                <input type="text" id="codigo_prestamo" name="codigo_prestamo" class="form-control" placeholder="Ej. PRE-001">
-            </div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-            <div class="form-group">
-                <label for="anio_estudiante">Año/Grado</label>
-                <select name="anio_estudiante" id="anio_estudiante" class="form-control" required>
-                    <option value="">Seleccione el año</option>
-                    <option value="1er Año">1er Año</option>
-                    <option value="2do Año">2do Año</option>
-                    <option value="3er Año">3er Año</option>
-                    <option value="4to Año">4to Año</option>
-                    <option value="5to Año">5to Año</option>
-                    <option value="Docente/Personal">Docente/Personal</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="ubicacion_lectura">Ubicación de Lectura</label>
-                <select name="ubicacion_lectura" id="ubicacion_lectura" class="form-control" required>
-                    <option value="">Seleccione ubicación</option>
-                    <option value="Aula">Aula</option>
-                    <option value="Biblioteca">Biblioteca</option>
-                    <option value="Hogar">Hogar (Préstamo Externo)</option>
-                    <option value="Patio/Cancha">Patio/Cancha</option>
-                </select>
-            </div>
+        <div class="form-group">
+            <label for="usuario_id">Estudiante (Usuario Registrado)</label>
+            <select name="usuario_id" id="usuario_id" class="form-control" required>
+                <option value="">Seleccione un estudiante</option>
+                <?php
+                if (isset($users)) {
+                    while ($u = $users->fetch(PDO::FETCH_ASSOC)) {
+                        echo "<option value='{$u['id']}'>" . htmlspecialchars($u['nombre_completo']) . " (" . htmlspecialchars($u['nombre_usuario']) . ")</option>";
+                    }
+                }
+                ?>
+            </select>
         </div>
 
         <div class="form-group" style="margin-top: 1rem;">
