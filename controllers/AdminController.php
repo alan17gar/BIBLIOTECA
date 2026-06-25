@@ -5,7 +5,6 @@
 require_once 'models/User.php';
 require_once 'models/Book.php';
 require_once 'models/Loan.php';
-require_once 'models/Task.php';
 require_once 'controllers/AuthController.php'; // Para usar los checks de rol
 
 class AdminController {
@@ -13,14 +12,12 @@ class AdminController {
     private $user;
     private $book;
     private $loan;
-    private $task;
 
     public function __construct($db) {
         $this->db = $db;
         $this->user = new User($this->db);
         $this->book = new Book($this->db);
         $this->loan = new Loan($this->db);
-        $this->task = new Task($this->db);
 
         // Proteger todas las acciones del admin
         AuthController::requireAdmin();
@@ -39,7 +36,11 @@ class AdminController {
 
     // --- Gestión de Libros (CRUD) ---
     public function books() {
-        $stmt = $this->book->readAll();
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
+            $stmt = $this->book->search($_GET['search']);
+        } else {
+            $stmt = $this->book->readAll();
+        }
         require 'views/admin/books.php';
     }
 
@@ -70,11 +71,28 @@ class AdminController {
     public function editBook($id) {
         $this->book->id = $id;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Lógica de actualización...
             $this->book->titulo = $_POST['titulo'];
-            // ... (resto de campos)
+            $this->book->autor = $_POST['autor'];
+            $this->book->isbn = $_POST['isbn'];
+            $this->book->categoria = $_POST['categoria'];
+            $this->book->sinopsis = $_POST['sinopsis'];
+            $this->book->cantidad_total = $_POST['cantidad_total'];
+            $this->book->cantidad_disponible = $_POST['cantidad_total']; // Simplificación: reajustar disponible
+            $this->book->ubicacion_fisica = $_POST['ubicacion_fisica'];
+
+            // Mantener archivos existentes si no se suben nuevos
+            $this->book->readOne();
+            $old_portada = $this->book->portada;
+            $old_pdf = $this->book->pdf_ruta;
+
+            $new_portada = $this->uploadFile('portada', 'uploads/covers/');
+            $new_pdf = $this->uploadFile('pdf', 'uploads/pdfs/');
+
+            $this->book->portada = !empty($new_portada) ? $new_portada : $old_portada;
+            $this->book->pdf_ruta = !empty($new_pdf) ? $new_pdf : $old_pdf;
+
             if ($this->book->update()) {
-                header("Location: " . BASE_PATH . "/admin/books");
+                header("Location: " . BASE_PATH . "/admin/books?success=1");
                 exit;
             }
         } else {
@@ -97,7 +115,52 @@ class AdminController {
         require 'views/admin/users.php';
     }
 
-    // ... (métodos para createUser, editUser, deleteUser similares a los de libros)
+    public function createUser() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->user->nombre_usuario = $_POST['nombre_usuario'];
+            $this->user->password = $_POST['password'];
+            $this->user->rol = $_POST['rol'];
+            $this->user->nombre_completo = $_POST['nombre_completo'];
+            $this->user->correo = $_POST['correo'];
+
+            if ($this->user->create()) {
+                header("Location: " . BASE_PATH . "/admin/users?success=1");
+                exit;
+            }
+        }
+        require 'views/admin/user_form.php';
+    }
+
+    public function editUser($id) {
+        $this->user->id = $id;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->user->nombre_usuario = $_POST['nombre_usuario'];
+            $this->user->rol = $_POST['rol'];
+            $this->user->nombre_completo = $_POST['nombre_completo'];
+            $this->user->correo = $_POST['correo'];
+
+            if (!empty($_POST['password'])) {
+                $this->user->password = $_POST['password'];
+            }
+
+            if ($this->user->update()) {
+                header("Location: " . BASE_PATH . "/admin/users?success=1");
+                exit;
+            }
+        } else {
+            $this->user->readOne();
+            require 'views/admin/user_form.php';
+        }
+    }
+
+    public function deleteUser($id) {
+        $this->user->id = $id;
+        if ($id != $_SESSION['user_id'] && $this->user->delete()) {
+            header("Location: " . BASE_PATH . "/admin/users?success=1");
+            exit;
+        }
+        header("Location: " . BASE_PATH . "/admin/users?error=1");
+    }
 
     // --- Gestión de Préstamos ---
     public function loans() {
@@ -105,44 +168,33 @@ class AdminController {
         require 'views/admin/loans.php';
     }
 
+    public function createLoan() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->loan->libro_id = $_POST['libro_id'];
+            $this->loan->nombre_estudiante = $_POST['nombre_estudiante'];
+            $this->loan->codigo_prestamo = $_POST['codigo_prestamo'];
+            $this->loan->anio_estudiante = $_POST['anio_estudiante'];
+            $this->loan->ubicacion_lectura = $_POST['ubicacion_lectura'];
+            $this->loan->estado = 'prestado';
+            $this->loan->multa = 0;
+
+            if ($this->loan->create()) {
+                header("Location: " . BASE_PATH . "/admin/loans?success=1");
+                exit;
+            } else {
+                $error = "No se pudo registrar el préstamo. Verifique la disponibilidad del libro.";
+            }
+        }
+
+        $books = $this->book->readAll();
+        require 'views/admin/loan_form.php';
+    }
+
     public function returnLoan($id) {
         $this->loan->id = $id;
         if ($this->loan->returnBook()) {
-            header("Location: " . BASE_PATH . "/admin/loans");
+            header("Location: " . BASE_PATH . "/admin/loans?returned=1");
             exit;
-        }
-    }
-
-    // --- Gestión de Tareas ---
-    public function tasks() {
-        $stmt = $this->task->readAll();
-        require 'views/admin/tasks.php';
-    }
-
-    public function createTask() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Procesar el formulario enviado
-            $this->task->titulo = $_POST['titulo'];
-            $this->task->descripcion = $_POST['descripcion'];
-            $this->task->usuario_asignado_id = $_POST['usuario_asignado_id'];
-            $this->task->libro_relacionado_id = !empty($_POST['libro_relacionado_id']) ? $_POST['libro_relacionado_id'] : null;
-            $this->task->fecha_limite = $_POST['fecha_limite'];
-
-            if ($this->task->create()) {
-                // Redirigir a la lista de tareas si se crea con éxito
-                header("Location: " . BASE_PATH . "/admin/tasks");
-                exit;
-            } else {
-                // Manejar error
-                echo "Error al crear la tarea.";
-            }
-        } else {
-            // Mostrar el formulario de creación
-            // Necesitamos pasarle la lista de estudiantes y libros a la vista
-            $students = $this->user->readAll(); // Asumimos que readAll() devuelve todos los usuarios
-            $books = $this->book->readAll();
-
-            require 'views/admin/task_form.php';
         }
     }
 

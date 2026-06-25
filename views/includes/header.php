@@ -19,7 +19,13 @@
 
     <header class="main-header">
         <div class="container">
-            <a href="<?php echo BASE_PATH; ?>/" class="logo">
+            <?php
+            $logo_url = BASE_PATH . '/';
+            if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
+                $logo_url = BASE_PATH . '/admin';
+            }
+            ?>
+            <a href="<?php echo $logo_url; ?>" class="logo">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
                 <span>BIBLIOTECA</span>
             </a>

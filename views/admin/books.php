@@ -5,13 +5,34 @@ $page_title = "Gestionar Libros";
 include_once 'views/includes/header.php';
 ?>
 
+<?php if (isset($_GET['success'])): ?>
+    <div class="alert-card success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Operación realizada con éxito.
+    </div>
+<?php endif; ?>
+
 <div class="page-header">
     <h1>Gestión de Libros</h1>
-    <a href="<?php echo BASE_PATH; ?>/admin/createBook" class="btn btn-primary">
-        <!-- Icono de añadir -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-        Añadir Nuevo Libro
-    </a>
+    <div class="header-actions">
+        <a href="<?php echo BASE_PATH; ?>/admin/createBook" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Añadir Nuevo Libro
+        </a>
+        <button class="btn btn-info btn-sm" onclick="alert('Exportando a PDF...')">PDF</button>
+        <button class="btn btn-success btn-sm" onclick="alert('Exportando a Excel...')">Excel</button>
+    </div>
+</div>
+
+<div class="search-filters glass-card" style="padding: 1.5rem; margin-bottom: 2rem; display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+    <form action="<?php echo BASE_PATH; ?>/admin/books" method="get" style="display: flex; gap: 0.5rem; flex-grow: 1;">
+        <input type="text" name="search" class="form-control" placeholder="Buscar por título, autor o ISBN..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+        <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+    </form>
+    <a href="<?php echo BASE_PATH; ?>/admin/books?search=Colección Bicentenaria" class="btn btn-accent btn-sm">Colección Bicentenaria</a>
+    <?php if(isset($_GET['search'])): ?>
+        <a href="<?php echo BASE_PATH; ?>/admin/books" class="btn btn-secondary btn-sm">Limpiar</a>
+    <?php endif; ?>
 </div>
 
 <div class="table-container">

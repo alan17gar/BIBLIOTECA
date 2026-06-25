@@ -33,7 +33,14 @@ include_once 'views/includes/header.php';
 
         <div class="form-group">
             <label for="categoria">Categoría</label>
-            <input type="text" id="categoria" name="categoria" class="form-control" value="<?php echo $is_edit ? htmlspecialchars($this->book->categoria) : ''; ?>">
+            <select id="categoria" name="categoria" class="form-control" required>
+                <option value="">Seleccione una categoría</option>
+                <option value="Colección Bicentenaria" <?php echo ($is_edit && $this->book->categoria == 'Colección Bicentenaria') ? 'selected' : ''; ?>>Colección Bicentenaria</option>
+                <option value="General" <?php echo ($is_edit && $this->book->categoria == 'General') ? 'selected' : ''; ?>>General</option>
+                <option value="Referencia" <?php echo ($is_edit && $this->book->categoria == 'Referencia') ? 'selected' : ''; ?>>Referencia</option>
+                <option value="Literatura" <?php echo ($is_edit && $this->book->categoria == 'Literatura') ? 'selected' : ''; ?>>Literatura</option>
+                <option value="Ciencias" <?php echo ($is_edit && $this->book->categoria == 'Ciencias') ? 'selected' : ''; ?>>Ciencias</option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -48,7 +55,13 @@ include_once 'views/includes/header.php';
 
         <div class="form-group">
             <label for="ubicacion_fisica">Ubicación Física</label>
-            <input type="text" id="ubicacion_fisica" name="ubicacion_fisica" class="form-control" value="<?php echo $is_edit ? htmlspecialchars($this->book->ubicacion_fisica) : ''; ?>">
+            <select id="ubicacion_fisica" name="ubicacion_fisica" class="form-control" required>
+                <option value="">Seleccione un estante</option>
+                <?php for($i=1; $i<=7; $i++): ?>
+                    <option value="Estante <?php echo $i; ?>" <?php echo ($is_edit && $this->book->ubicacion_fisica == "Estante $i") ? 'selected' : ''; ?>>Estante <?php echo $i; ?></option>
+                <?php endfor; ?>
+                <option value="Estante 7+" <?php echo ($is_edit && $this->book->ubicacion_fisica == 'Estante 7+') ? 'selected' : ''; ?>>Estante 7+</option>
+            </select>
         </div>
 
         <div class="form-group">
