@@ -2,8 +2,8 @@
 ob_start();
 // controllers/AdminController.php - Controlador para el panel de administración
 
-// Incluir librerías externas
-require_once 'libs/fpdf/fpdf.php';
+// Incluir librerías externas usando ruta absoluta segura para Render
+require_once __DIR__ . '/../libs/fpdf/fpdf.php';
 
 // Incluir los modelos necesarios
 require_once 'models/User.php';
