@@ -36,7 +36,10 @@ include_once 'views/includes/header.php';
         </div>
 
         <div class="form-group">
-            <label for="estudiante_id">Estudiante</label>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+                <label for="estudiante_id" style="margin-bottom: 0;">Estudiante</label>
+                <button type="button" id="openStudentModal" class="btn btn-sm btn-accent" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">+ Registrar Nuevo Estudiante</button>
+            </div>
             <select name="estudiante_id" id="estudiante_id" class="form-control" required>
                 <option value="">Seleccione un estudiante</option>
                 <?php
@@ -64,6 +67,86 @@ include_once 'views/includes/header.php';
         </div>
     </form>
 </div>
+
+<!-- Modal para Registro Rápido de Estudiante -->
+<div id="studentModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+    <div class="glass-card" style="width: 90%; max-width: 500px; padding: 2.5rem; position: relative; animation: modalIn 0.3s ease;">
+        <h3 style="margin-bottom: 1.5rem; font-weight: 800;">Registrar Estudiante</h3>
+
+        <form id="quickStudentForm">
+            <div class="form-group">
+                <label for="m_cedula">Cédula</label>
+                <input type="text" id="m_cedula" name="cedula" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="m_nombre">Nombre Completo</label>
+                <input type="text" id="m_nombre" name="nombre_completo" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="m_anio">Año/Grado</label>
+                <select id="m_anio" name="anio_secundaria" class="form-control" required>
+                    <option value="1er Año">1er Año</option>
+                    <option value="2do Año">2do Año</option>
+                    <option value="3er Año">3er Año</option>
+                    <option value="4to Año">4to Año</option>
+                    <option value="5to Año">5to Año</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary btn-sm btn-block">Guardar</button>
+                <button type="button" id="closeStudentModal" class="btn btn-secondary btn-sm" style="width: auto;">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+@keyframes modalIn {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('studentModal');
+    const openBtn = document.getElementById('openStudentModal');
+    const closeBtn = document.getElementById('closeStudentModal');
+    const form = document.getElementById('quickStudentForm');
+    const studentSelect = document.getElementById('estudiante_id');
+
+    openBtn.onclick = () => modal.style.display = 'flex';
+    closeBtn.onclick = () => modal.style.display = 'none';
+
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch('<?php echo BASE_PATH; ?>/admin/createStudentQuick', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if(data.success) {
+                // Agregar al select y seleccionar
+                const option = new Option(data.nombre_completo, data.id, true, true);
+                studentSelect.add(option);
+
+                // Cerrar y limpiar
+                modal.style.display = 'none';
+                form.reset();
+                showToast('Estudiante registrado y seleccionado.');
+            } else {
+                showToast(data.message || 'Error al guardar', 'error');
+            }
+        } catch (err) {
+            showToast('Error de conexión', 'error');
+        }
+    };
+});
+</script>
 
 <?php
 include_once 'views/includes/footer.php';

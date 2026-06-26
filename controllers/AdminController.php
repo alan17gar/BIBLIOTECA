@@ -175,6 +175,7 @@ class AdminController {
     public function createLoan() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->loan->libro_id = $_POST['libro_id'];
+            // Corregido: mapear estudiante_id desde el selector
             $this->loan->estudiante_id = $_POST['estudiante_id'];
             $this->loan->ubicacion_lectura = $_POST['ubicacion_lectura'];
             $this->loan->estado = 'prestado';
@@ -191,6 +192,26 @@ class AdminController {
         $books = $this->book->readAll();
         $students = $this->student->readAll();
         require 'views/admin/loan_form.php';
+    }
+
+    public function createStudentQuick() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->student->cedula = $_POST['cedula'];
+            $this->student->nombre_completo = $_POST['nombre_completo'];
+            $this->student->anio_secundaria = $_POST['anio_secundaria'];
+
+            if ($this->student->create()) {
+                $new_id = $this->db->lastInsertId();
+                echo json_encode([
+                    'success' => true,
+                    'id' => $new_id,
+                    'nombre_completo' => $this->student->nombre_completo
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error al crear estudiante']);
+            }
+            exit;
+        }
     }
 
     public function returnLoan($id) {
