@@ -175,8 +175,8 @@ class AdminController {
     public function createLoan() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->loan->libro_id = $_POST['libro_id'];
-            // Corregido: mapear estudiante_id desde el selector
-            $this->loan->estudiante_id = $_POST['estudiante_id'];
+            // Mapear el ID del estudiante desde el formulario (se usa usuario_id en el select por compatibilidad)
+            $this->loan->estudiante_id = $_POST['usuario_id'];
             $this->loan->ubicacion_lectura = $_POST['ubicacion_lectura'];
             $this->loan->estado = 'prestado';
             $this->loan->multa = 0;

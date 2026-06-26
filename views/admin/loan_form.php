@@ -37,10 +37,10 @@ include_once 'views/includes/header.php';
 
         <div class="form-group">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
-                <label for="estudiante_id" style="margin-bottom: 0;">Estudiante</label>
-                <button type="button" id="openStudentModal" class="btn btn-sm btn-accent" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">+ Registrar Nuevo Estudiante</button>
+                <label for="usuario_id" style="margin-bottom: 0;">Estudiante</label>
+                <button type="button" id="openStudentModal" class="btn btn-sm btn-accent" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">+ Registrar Estudiante</button>
             </div>
-            <select name="estudiante_id" id="estudiante_id" class="form-control" required>
+            <select name="usuario_id" id="usuario_id" class="form-control" required>
                 <option value="">Seleccione un estudiante</option>
                 <?php
                 if (isset($students)) {
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const openBtn = document.getElementById('openStudentModal');
     const closeBtn = document.getElementById('closeStudentModal');
     const form = document.getElementById('quickStudentForm');
-    const studentSelect = document.getElementById('estudiante_id');
+    const studentSelect = document.getElementById('usuario_id');
 
     openBtn.onclick = () => modal.style.display = 'flex';
     closeBtn.onclick = () => modal.style.display = 'none';

@@ -52,11 +52,11 @@ include_once 'views/includes/header.php';
                     $status_class = 'status-' . htmlspecialchars($estado);
 
                     echo "<tr>";
-                    echo "<td><strong>" . htmlspecialchars($libro_titulo) . "</strong></td>";
-                    echo "<td>" . htmlspecialchars($estudiante_nombre) . "<br><small>C.I. " . htmlspecialchars($estudiante_cedula) . "</small></td>";
-                    echo "<td>" . htmlspecialchars($estudiante_anio) . "<br><small>" . htmlspecialchars($ubicacion_lectura) . "</small></td>";
-                    echo "<td>" . date("d/m/Y", strtotime($fecha_prestamo)) . "</td>";
-                    echo "<td><span class='status " . $status_class . "'>" . htmlspecialchars($estado) . "</span></td>";
+                    echo "<td><strong>" . htmlspecialchars($row['libro_titulo']) . "</strong></td>";
+                    echo "<td>" . htmlspecialchars($row['nombre_estudiante']) . "<br><small>C.I. " . htmlspecialchars($row['estudiante_cedula']) . "</small></td>";
+                    echo "<td>" . htmlspecialchars($row['anio_estudiante']) . "<br><small>" . htmlspecialchars($row['ubicacion_lectura']) . "</small></td>";
+                    echo "<td>" . date("d/m/Y", strtotime($row['fecha_prestamo'])) . "</td>";
+                    echo "<td><span class='status " . $status_class . "'>" . htmlspecialchars($row['estado']) . "</span></td>";
                     echo "<td class='actions'>";
                     if ($estado == 'prestado' || $estado == 'retrasado') {
                         echo "<a href='" . BASE_PATH . "/admin/returnLoan/{$id}' class='btn btn-sm btn-success'>Marcar como Devuelto</a>";
