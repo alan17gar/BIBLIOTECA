@@ -2,6 +2,9 @@
 ob_start();
 // controllers/AdminController.php - Controlador para el panel de administración
 
+// Incluir librerías externas
+require_once 'libs/fpdf/fpdf.php';
+
 // Incluir los modelos necesarios
 require_once 'models/User.php';
 require_once 'models/Book.php';
@@ -246,9 +249,54 @@ class AdminController {
 
     public function exportLoansPDF() {
         if (ob_get_length()) ob_end_clean();
+
+        $pdf = new FPDF('L', 'mm', 'A4');
+        $pdf->AddPage();
+
+        // Encabezado Elegante
+        $pdf->SetFillColor(98, 0, 234); // Morado primario del sistema
+        $pdf->Rect(0, 0, 297, 40, 'F');
+
+        $pdf->SetFont('Arial', 'B', 22);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->Cell(0, 20, utf8_decode('SISTEMA DE BIBLIOTECA'), 0, 1, 'C');
+        $pdf->SetFont('Arial', '', 14);
+        $pdf->Cell(0, 10, utf8_decode('REPORTE DETALLADO DE PRÉSTAMOS'), 0, 1, 'C');
+
+        $pdf->Ln(20);
+
+        // Tabla Estilizada
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFillColor(26, 35, 126); // Azul oscuro
+        $pdf->SetTextColor(255, 255, 255);
+
+        // Cabeceras: Cédula, Estudiante, Año, Libro Prestado, Fecha, Ubicación
+        $pdf->Cell(30, 10, utf8_decode('Cédula'), 1, 0, 'C', true);
+        $pdf->Cell(60, 10, utf8_decode('Estudiante'), 1, 0, 'C', true);
+        $pdf->Cell(30, 10, utf8_decode('Año'), 1, 0, 'C', true);
+        $pdf->Cell(80, 10, utf8_decode('Libro Prestado'), 1, 0, 'C', true);
+        $pdf->Cell(35, 10, utf8_decode('Fecha'), 1, 0, 'C', true);
+        $pdf->Cell(42, 10, utf8_decode('Ubicación'), 1, 1, 'C', true);
+
+        $pdf->SetFont('Arial', '', 9);
+        $pdf->SetTextColor(0, 0, 0);
+
+        $stmt = $this->loan->readAll();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pdf->Cell(30, 8, utf8_decode($row['estudiante_cedula']), 1, 0, 'C');
+            $pdf->Cell(60, 8, utf8_decode($row['nombre_estudiante']), 1, 0, 'L');
+            $pdf->Cell(30, 8, utf8_decode($row['anio_estudiante']), 1, 0, 'C');
+            $pdf->Cell(80, 8, utf8_decode($row['libro_titulo']), 1, 0, 'L');
+            $pdf->Cell(35, 8, date("d/m/Y", strtotime($row['fecha_prestamo'])), 1, 0, 'C');
+            $pdf->Cell(42, 8, utf8_decode($row['ubicacion_lectura']), 1, 1, 'L');
+        }
+
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="prestamos_historial.pdf"');
-        echo "%PDF-1.4\n1 0 obj\n<< /Title (Historial de Prestamos) >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF";
+        header('Content-Disposition: attachment; filename="reporte_prestamos_' . date('Ymd') . '.pdf"');
+        header('Cache-Control: private, max-age=0, must-revalidate');
+        header('Pragma: public');
+
+        echo $pdf->Output('S');
         exit;
     }
 

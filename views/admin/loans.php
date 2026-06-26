@@ -48,8 +48,7 @@ include_once 'views/includes/header.php';
             <?php
             if (isset($stmt) && $stmt->rowCount() > 0) {
                 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    extract($row);
-                    $status_class = 'status-' . htmlspecialchars($estado);
+                    $status_class = 'status-' . htmlspecialchars($row['estado']);
 
                     echo "<tr>";
                     echo "<td><strong>" . htmlspecialchars($row['libro_titulo']) . "</strong></td>";
