@@ -24,18 +24,6 @@ include_once 'views/includes/header.php';
     </div>
 
     <div class="stat-card">
-        <div class="stat-icon icon-tasks">
-             <!-- Icono de tareas -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-        </div>
-        <div class="stat-info">
-            <p>Tareas Pendientes</p>
-            <span><?php echo isset($pending_tasks_count) ? $pending_tasks_count : '0'; ?></span>
-        </div>
-        <a href="<?php echo BASE_PATH; ?>/student/tasks" class="stat-link">Ver mis tareas</a>
-    </div>
-
-    <div class="stat-card">
         <div class="stat-icon icon-books">
             <!-- Icono de libro -->
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-book-open"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
@@ -64,9 +52,11 @@ include_once 'views/includes/header.php';
             </thead>
             <tbody>
                 <?php
-                if (isset($loans) && $loans->rowCount() > 0) {
-                    while ($row = $loans->fetch(PDO::FETCH_ASSOC)) {
+                if (!empty($loans_data)) {
+                    $has_active = false;
+                    foreach ($loans_data as $row) {
                         if ($row['estado'] == 'prestado') {
+                             $has_active = true;
                              echo "<tr>";
                              echo "<td>" . htmlspecialchars($row['libro_titulo']) . "</td>";
                              echo "<td>" . date("d/m/Y", strtotime($row['fecha_prestamo'])) . "</td>";
@@ -75,8 +65,11 @@ include_once 'views/includes/header.php';
                              echo "</tr>";
                         }
                     }
+                    if (!$has_active) {
+                        echo "<tr><td colspan='4'>No tienes préstamos activos actualmente.</td></tr>";
+                    }
                 } else {
-                    echo "<tr><td colspan='4'>No tienes préstamos activos.</td></tr>";
+                    echo "<tr><td colspan='4'>No tienes historial de préstamos.</td></tr>";
                 }
                 ?>
             </tbody>

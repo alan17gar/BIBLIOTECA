@@ -4,20 +4,17 @@
 // Incluir los modelos y controladores necesarios
 require_once 'models/Book.php';
 require_once 'models/Loan.php';
-require_once 'models/Task.php';
 require_once 'controllers/AuthController.php'; // Para usar los checks de rol
 
 class StudentController {
     private $db;
     private $book;
     private $loan;
-    private $task;
 
     public function __construct($db) {
         $this->db = $db;
         $this->book = new Book($this->db);
         $this->loan = new Loan($this->db);
-        $this->task = new Task($this->db);
 
         // Proteger todas las acciones del estudiante
         AuthController::requireStudent();
@@ -26,29 +23,21 @@ class StudentController {
     // --- Dashboard Principal del Estudiante ---
     public function index() {
         // Cargar datos para el dashboard del estudiante
-        // Por ejemplo, número de préstamos activos y tareas pendientes
         $user_id = $_SESSION['user_id'];
-        $loans = $this->loan->readByUserId($user_id);
-        $tasks = $this->task->readByUserId($user_id);
 
+        // Obtener préstamos del estudiante
+        $stmt = $this->loan->readByUserId($user_id);
         $active_loans_count = 0;
-        while ($row = $loans->fetch(PDO::FETCH_ASSOC)) {
+        $loans_data = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $loans_data[] = $row;
             if ($row['estado'] == 'prestado') {
                 $active_loans_count++;
             }
         }
 
-        $pending_tasks_count = 0;
-        while ($row = $tasks->fetch(PDO::FETCH_ASSOC)) {
-            if ($row['estado'] == 'pendiente') {
-                $pending_tasks_count++;
-            }
-        }
-
-        // Volver a ejecutar las consultas para pasar los resultados a la vista
-        $loans = $this->loan->readByUserId($user_id);
-        $tasks = $this->task->readByUserId($user_id);
-
+        // Pasar datos a la vista
         require 'views/student/dashboard.php';
     }
 
@@ -89,27 +78,6 @@ class StudentController {
         exit;
     }
 
-    // --- Visualización de tareas asignadas ---
-    public function tasks() {
-        $user_id = $_SESSION['user_id'];
-        $stmt = $this->task->readByUserId($user_id);
-        require 'views/student/tasks.php';
-    }
-
-    // --- Completar una tarea ---
-    public function completeTask($task_id) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->task->id = $task_id;
-            $this->task->usuario_asignado_id = $_SESSION['user_id'];
-            $this->task->respuesta = $_POST['respuesta'];
-
-            if ($this->task->complete()) {
-                header("Location: " . BASE_PATH . "/student/tasks");
-                exit;
-            }
-        }
-        // Aquí se podría mostrar un formulario específico para completar la tarea si fuera necesario
-    }
 
     // --- Juegos Interactivos ---
     public function games($game_name = 'index') {

@@ -5,7 +5,6 @@
     <li><a href="<?php echo BASE_PATH; ?>/admin/books">Gestionar Libros</a></li>
     <li><a href="<?php echo BASE_PATH; ?>/admin/users">Gestionar Usuarios</a></li>
     <li><a href="<?php echo BASE_PATH; ?>/admin/loans">Gestionar Préstamos</a></li>
-    <li><a href="<?php echo BASE_PATH; ?>/admin/tasks">Asignar Tareas</a></li>
     <li class="user-menu">
         <span>
             <!-- Icono de usuario -->

@@ -194,5 +194,15 @@ class Book {
         }
         return false; // No se pudo actualizar o no hay suficientes libros
     }
+
+    // Método explícito para descontar stock
+    public function descontarStock($id) {
+        return $this->updateAvailability($id, -1);
+    }
+
+    // Método explícito para reintegrar stock
+    public function reintegrarStock($id) {
+        return $this->updateAvailability($id, 1);
+    }
 }
 ?>

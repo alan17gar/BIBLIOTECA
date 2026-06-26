@@ -5,6 +5,13 @@ $page_title = "Gestionar Usuarios";
 include_once 'views/includes/header.php';
 ?>
 
+<?php if (isset($_GET['success'])): ?>
+    <div class="alert-card success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Usuario actualizado correctamente.
+    </div>
+<?php endif; ?>
+
 <div class="page-header">
     <h1>Gestión de Usuarios</h1>
     <!-- El enlace para crear usuario apuntará a una acción que aún no he implementado en el controlador -->
