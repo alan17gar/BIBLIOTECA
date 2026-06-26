@@ -97,7 +97,7 @@ class Loan {
                     l.titulo as libro_titulo, l.autor as libro_autor
                   FROM " . $this->table_name . " p
                   JOIN libros l ON p.libro_id = l.id
-                  WHERE p.usuario_id = ?
+                  WHERE p.estudiante_id = ?
                   ORDER BY p.fecha_prestamo DESC";
 
         $stmt = $this->conn->prepare($query);

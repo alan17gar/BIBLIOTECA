@@ -4,7 +4,6 @@
     <li><a href="<?php echo BASE_PATH; ?>/student">Dashboard</a></li>
     <li><a href="<?php echo BASE_PATH; ?>/student/books">Buscar Libros</a></li>
     <li><a href="<?php echo BASE_PATH; ?>/student/loans">Mis Préstamos</a></li>
-    <li><a href="<?php echo BASE_PATH; ?>/student/tasks">Mis Tareas</a></li>
     <li><a href="<?php echo BASE_PATH; ?>/student/games">Juegos</a></li>
     <li class="user-menu">
         <span>

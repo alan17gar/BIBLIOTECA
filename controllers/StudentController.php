@@ -23,20 +23,21 @@ class StudentController {
     // --- Dashboard Principal del Estudiante ---
     public function index() {
         // Cargar datos para el dashboard del estudiante
-        // Por ejemplo, número de préstamos activos
         $user_id = $_SESSION['user_id'];
-        $loans = $this->loan->readByUserId($user_id);
 
+        // Obtener préstamos del estudiante
+        $stmt = $this->loan->readByUserId($user_id);
         $active_loans_count = 0;
-        while ($row = $loans->fetch(PDO::FETCH_ASSOC)) {
+        $loans_data = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $loans_data[] = $row;
             if ($row['estado'] == 'prestado') {
                 $active_loans_count++;
             }
         }
 
-        // Volver a ejecutar las consultas para pasar los resultados a la vista
-        $loans = $this->loan->readByUserId($user_id);
-
+        // Pasar datos a la vista
         require 'views/student/dashboard.php';
     }
 

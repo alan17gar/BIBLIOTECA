@@ -78,13 +78,24 @@ class AdminController {
     public function editBook($id) {
         $this->book->id = $id;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Obtener el estado actual del libro antes de actualizar
+            $this->book->readOne();
+            $old_total = $this->book->cantidad_total;
+            $old_disponible = $this->book->cantidad_disponible;
+
             $this->book->titulo = $_POST['titulo'];
             $this->book->autor = $_POST['autor'];
             $this->book->isbn = $_POST['isbn'];
             $this->book->categoria = $_POST['categoria'];
             $this->book->sinopsis = $_POST['sinopsis'];
-            $this->book->cantidad_total = $_POST['cantidad_total'];
-            $this->book->cantidad_disponible = $_POST['cantidad_total']; // Simplificación: reajustar disponible
+
+            $new_total = $_POST['cantidad_total'];
+            $diferencia = $new_total - $old_total;
+
+            $this->book->cantidad_total = $new_total;
+            // Ajustar la cantidad disponible proporcionalmente al cambio en el total
+            $this->book->cantidad_disponible = max(0, $old_disponible + $diferencia);
+
             $this->book->ubicacion_fisica = $_POST['ubicacion_fisica'];
 
             // Mantener archivos existentes si no se suben nuevos
@@ -167,6 +178,7 @@ class AdminController {
             exit;
         }
         header("Location: " . BASE_PATH . "/admin/users?error=1");
+        exit;
     }
 
     // --- Gestión de Préstamos ---
@@ -228,15 +240,50 @@ class AdminController {
     // --- Métodos de Exportación ---
 
     public function exportBooksPDF() {
-        if (ob_get_length()) ob_end_clean();
+        while (ob_get_level()) { ob_end_clean(); }
+
+        $pdf = new FPDF('P', 'mm', 'A4');
+        $pdf->AddPage();
+
+        // Encabezado Estilizado
+        $pdf->SetFillColor(98, 0, 234);
+        $pdf->Rect(0, 0, 210, 30, 'F');
+
+        $pdf->SetFont('Arial', 'B', 18);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->Cell(0, 15, utf8_decode('INVENTARIO DE LIBROS'), 0, 1, 'C');
+
+        $pdf->Ln(15);
+
+        // Cabecera de Tabla
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFillColor(26, 35, 126);
+        $pdf->SetTextColor(255, 255, 255);
+
+        $pdf->Cell(75, 10, utf8_decode('Título'), 1, 0, 'C', true);
+        $pdf->Cell(50, 10, utf8_decode('Autor'), 1, 0, 'C', true);
+        $pdf->Cell(45, 10, utf8_decode('ISBN'), 1, 0, 'C', true);
+        $pdf->Cell(20, 10, utf8_decode('Stock'), 1, 1, 'C', true);
+
+        $pdf->SetFont('Arial', '', 9);
+        $pdf->SetTextColor(0, 0, 0);
+
+        $stmt = $this->book->readAll();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pdf->Cell(75, 8, utf8_decode($row['titulo']), 1, 0, 'L');
+            $pdf->Cell(50, 8, utf8_decode($row['autor']), 1, 0, 'L');
+            $pdf->Cell(45, 8, utf8_decode($row['isbn']), 1, 0, 'C');
+            $pdf->Cell(20, 8, utf8_decode($row['cantidad_disponible']), 1, 1, 'C');
+        }
+
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="libros_inventario.pdf"');
-        echo "%PDF-1.4\n1 0 obj\n<< /Title (Inventario de Libros) /Creator (Biblioteca App) >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF";
+        header('Content-Disposition: attachment; filename="inventario_libros_' . date('Ymd') . '.pdf"');
+        echo $pdf->Output('S');
         exit;
     }
 
     public function exportBooksExcel() {
-        if (ob_get_length()) ob_end_clean();
+        while (ob_get_level()) { ob_end_clean(); }
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="libros_inventario.xls"');
         echo "Título\tAutor\tISBN\tStock\n";
@@ -248,7 +295,7 @@ class AdminController {
     }
 
     public function exportLoansPDF() {
-        if (ob_get_length()) ob_end_clean();
+        while (ob_get_level()) { ob_end_clean(); }
 
         $pdf = new FPDF('L', 'mm', 'A4');
         $pdf->AddPage();
@@ -301,7 +348,7 @@ class AdminController {
     }
 
     public function exportLoansExcel() {
-        if (ob_get_length()) ob_end_clean();
+        while (ob_get_level()) { ob_end_clean(); }
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="prestamos_historial.xls"');
         echo "Libro\tEstudiante\tCédula\tUbicación\tFecha\n";
@@ -309,7 +356,7 @@ class AdminController {
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // Ajustar nombres de campos según el nuevo readAll()
             $nombre = isset($row['nombre_estudiante']) ? $row['nombre_estudiante'] : '-';
-            $cedula = isset($row['cedula']) ? $row['cedula'] : '-';
+            $cedula = isset($row['estudiante_cedula']) ? $row['estudiante_cedula'] : '-';
             echo "{$row['libro_titulo']}\t{$nombre}\t{$cedula}\t{$row['ubicacion_lectura']}\t{$row['fecha_prestamo']}\n";
         }
         exit;
