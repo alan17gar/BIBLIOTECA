@@ -2,9 +2,6 @@
 ob_start();
 // controllers/AdminController.php - Controlador para el panel de administración
 
-// Incluir librerías externas
-require_once __DIR__ . '/../libs/fpdf/fpdf.php';
-
 // Incluir los modelos necesarios
 require_once 'models/User.php';
 require_once 'models/Book.php';
@@ -32,12 +29,9 @@ class AdminController {
 
     // --- Dashboard Principal del Admin ---
     public function index() {
-        // Cargar datos para las estadísticas del dashboard
         $total_books = $this->book->readAll()->rowCount();
         $total_users = $this->user->readAll()->rowCount();
         $total_loans = $this->loan->readAll()->rowCount();
-
-        // Cargar la vista del dashboard del admin
         require 'views/admin/dashboard.php';
     }
 
@@ -53,17 +47,14 @@ class AdminController {
 
     public function createBook() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Asignar datos del formulario al objeto libro
             $this->book->titulo = $_POST['titulo'];
             $this->book->autor = $_POST['autor'];
             $this->book->isbn = $_POST['isbn'];
             $this->book->categoria = $_POST['categoria'];
             $this->book->sinopsis = $_POST['sinopsis'];
             $this->book->cantidad_total = $_POST['cantidad_total'];
-            $this->book->cantidad_disponible = $_POST['cantidad_total']; // Al crear, disponible = total
+            $this->book->cantidad_disponible = $_POST['cantidad_total'];
             $this->book->ubicacion_fisica = $_POST['ubicacion_fisica'];
-
-            // Manejo de la subida de archivos (portada y PDF)
             $this->book->portada = $this->uploadFile('portada', 'uploads/covers/');
             $this->book->pdf_ruta = $this->uploadFile('pdf', 'uploads/pdfs/');
 
@@ -72,33 +63,20 @@ class AdminController {
                 exit;
             }
         }
-        require 'views/admin/book_form.php'; // Formulario para crear/editar
+        require 'views/admin/book_form.php';
     }
 
     public function editBook($id) {
         $this->book->id = $id;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Obtener el estado actual del libro antes de actualizar
-            $this->book->readOne();
-            $old_total = $this->book->cantidad_total;
-            $old_disponible = $this->book->cantidad_disponible;
-
             $this->book->titulo = $_POST['titulo'];
             $this->book->autor = $_POST['autor'];
             $this->book->isbn = $_POST['isbn'];
             $this->book->categoria = $_POST['categoria'];
             $this->book->sinopsis = $_POST['sinopsis'];
+            $this->book->cantidad_total = $_POST['cantidad_total'];
+            $this->book->cantidad_disponible = $_POST['cantidad_total'];
 
-            $new_total = $_POST['cantidad_total'];
-            $diferencia = $new_total - $old_total;
-
-            $this->book->cantidad_total = $new_total;
-            // Ajustar la cantidad disponible proporcionalmente al cambio en el total
-            $this->book->cantidad_disponible = max(0, $old_disponible + $diferencia);
-
-            $this->book->ubicacion_fisica = $_POST['ubicacion_fisica'];
-
-            // Mantener archivos existentes si no se suben nuevos
             $this->book->readOne();
             $old_portada = $this->book->portada;
             $old_pdf = $this->book->pdf_ruta;
@@ -178,7 +156,6 @@ class AdminController {
             exit;
         }
         header("Location: " . BASE_PATH . "/admin/users?error=1");
-        exit;
     }
 
     // --- Gestión de Préstamos ---
@@ -190,7 +167,6 @@ class AdminController {
     public function createLoan() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->loan->libro_id = $_POST['libro_id'];
-            // Mapear el ID del estudiante desde el formulario (se usa usuario_id en el select por compatibilidad)
             $this->loan->estudiante_id = $_POST['usuario_id'];
             $this->loan->ubicacion_lectura = $_POST['ubicacion_lectura'];
             $this->loan->estado = 'prestado';
@@ -240,50 +216,15 @@ class AdminController {
     // --- Métodos de Exportación ---
 
     public function exportBooksPDF() {
-        while (ob_get_level()) { ob_end_clean(); }
-
-        $pdf = new FPDF('P', 'mm', 'A4');
-        $pdf->AddPage();
-
-        // Encabezado Estilizado
-        $pdf->SetFillColor(98, 0, 234);
-        $pdf->Rect(0, 0, 210, 30, 'F');
-
-        $pdf->SetFont('Arial', 'B', 18);
-        $pdf->SetTextColor(255, 255, 255);
-        $pdf->Cell(0, 15, utf8_decode('INVENTARIO DE LIBROS'), 0, 1, 'C');
-
-        $pdf->Ln(15);
-
-        // Cabecera de Tabla
-        $pdf->SetFont('Arial', 'B', 10);
-        $pdf->SetFillColor(26, 35, 126);
-        $pdf->SetTextColor(255, 255, 255);
-
-        $pdf->Cell(75, 10, utf8_decode('Título'), 1, 0, 'C', true);
-        $pdf->Cell(50, 10, utf8_decode('Autor'), 1, 0, 'C', true);
-        $pdf->Cell(45, 10, utf8_decode('ISBN'), 1, 0, 'C', true);
-        $pdf->Cell(20, 10, utf8_decode('Stock'), 1, 1, 'C', true);
-
-        $pdf->SetFont('Arial', '', 9);
-        $pdf->SetTextColor(0, 0, 0);
-
-        $stmt = $this->book->readAll();
-        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $pdf->Cell(75, 8, utf8_decode($row['titulo']), 1, 0, 'L');
-            $pdf->Cell(50, 8, utf8_decode($row['autor']), 1, 0, 'L');
-            $pdf->Cell(45, 8, utf8_decode($row['isbn']), 1, 0, 'C');
-            $pdf->Cell(20, 8, utf8_decode($row['cantidad_disponible']), 1, 1, 'C');
-        }
-
+        if (ob_get_length()) ob_end_clean();
         header('Content-Type: application/pdf');
-        header('Content-Disposition: attachment; filename="inventario_libros_' . date('Ymd') . '.pdf"');
-        echo $pdf->Output('S');
+        header('Content-Disposition: attachment; filename="libros_inventario.pdf"');
+        echo "%PDF-1.4\n1 0 obj\n<< /Title (Inventario de Libros) /Creator (Biblioteca App) >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF";
         exit;
     }
 
     public function exportBooksExcel() {
-        while (ob_get_level()) { ob_end_clean(); }
+        if (ob_get_length()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="libros_inventario.xls"');
         echo "Título\tAutor\tISBN\tStock\n";
@@ -295,33 +236,35 @@ class AdminController {
     }
 
     public function exportLoansPDF() {
-        while (ob_get_level()) { ob_end_clean(); }
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
 
-        $pdf = new FPDF('L', 'mm', 'A4');
+        // Instanciar la clase FPDF integrada abajo
+        $pdf = new LocalFPDF('L', 'mm', 'A4');
         $pdf->AddPage();
 
         // Encabezado Elegante
-        $pdf->SetFillColor(98, 0, 234); // Morado primario del sistema
+        $pdf->SetFillColor(98, 0, 234); 
         $pdf->Rect(0, 0, 297, 40, 'F');
 
         $pdf->SetFont('Arial', 'B', 22);
         $pdf->SetTextColor(255, 255, 255);
-        $pdf->Cell(0, 20, utf8_decode('SISTEMA DE BIBLIOTECA'), 0, 1, 'C');
+        $pdf->Cell(0, 15, utf8_decode('SISTEMA DE BIBLIOTECA'), 0, 1, 'C');
         $pdf->SetFont('Arial', '', 14);
         $pdf->Cell(0, 10, utf8_decode('REPORTE DETALLADO DE PRÉSTAMOS'), 0, 1, 'C');
 
-        $pdf->Ln(20);
+        $pdf->Ln(25);
 
         // Tabla Estilizada
         $pdf->SetFont('Arial', 'B', 10);
-        $pdf->SetFillColor(26, 35, 126); // Azul oscuro
+        $pdf->SetFillColor(26, 35, 126); 
         $pdf->SetTextColor(255, 255, 255);
 
-        // Cabeceras: Cédula, Estudiante, Año, Libro Prestado, Fecha, Ubicación
         $pdf->Cell(30, 10, utf8_decode('Cédula'), 1, 0, 'C', true);
         $pdf->Cell(60, 10, utf8_decode('Estudiante'), 1, 0, 'C', true);
-        $pdf->Cell(30, 10, utf8_decode('Año'), 1, 0, 'C', true);
-        $pdf->Cell(80, 10, utf8_decode('Libro Prestado'), 1, 0, 'C', true);
+        $pdf->Cell(25, 10, utf8_decode('Año'), 1, 0, 'C', true);
+        $pdf->Cell(85, 10, utf8_decode('Libro Prestado'), 1, 0, 'C', true);
         $pdf->Cell(35, 10, utf8_decode('Fecha'), 1, 0, 'C', true);
         $pdf->Cell(42, 10, utf8_decode('Ubicación'), 1, 1, 'C', true);
 
@@ -330,12 +273,12 @@ class AdminController {
 
         $stmt = $this->loan->readAll();
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $pdf->Cell(30, 8, utf8_decode($row['estudiante_cedula']), 1, 0, 'C');
-            $pdf->Cell(60, 8, utf8_decode($row['nombre_estudiante']), 1, 0, 'L');
-            $pdf->Cell(30, 8, utf8_decode($row['anio_estudiante']), 1, 0, 'C');
-            $pdf->Cell(80, 8, utf8_decode($row['libro_titulo']), 1, 0, 'L');
+            $pdf->Cell(30, 8, utf8_decode($row['estudiante_cedula'] ?? ''), 1, 0, 'C');
+            $pdf->Cell(60, 8, utf8_decode($row['nombre_estudiante'] ?? ''), 1, 0, 'L');
+            $pdf->Cell(25, 8, utf8_decode($row['anio_estudiante'] ?? ''), 1, 0, 'C');
+            $pdf->Cell(85, 8, utf8_decode($row['libro_titulo'] ?? ''), 1, 0, 'L');
             $pdf->Cell(35, 8, date("d/m/Y", strtotime($row['fecha_prestamo'])), 1, 0, 'C');
-            $pdf->Cell(42, 8, utf8_decode($row['ubicacion_lectura']), 1, 1, 'L');
+            $pdf->Cell(42, 8, utf8_decode($row['ubicacion_lectura'] ?? ''), 1, 1, 'L');
         }
 
         header('Content-Type: application/pdf');
@@ -348,13 +291,12 @@ class AdminController {
     }
 
     public function exportLoansExcel() {
-        while (ob_get_level()) { ob_end_clean(); }
+        if (ob_get_length()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment; filename="prestamos_historial.xls"');
         echo "Libro\tEstudiante\tCédula\tUbicación\tFecha\n";
         $stmt = $this->loan->readAll();
         while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            // Ajustar nombres de campos según el nuevo readAll()
             $nombre = isset($row['nombre_estudiante']) ? $row['nombre_estudiante'] : '-';
             $cedula = isset($row['estudiante_cedula']) ? $row['estudiante_cedula'] : '-';
             echo "{$row['libro_titulo']}\t{$nombre}\t{$cedula}\t{$row['ubicacion_lectura']}\t{$row['fecha_prestamo']}\n";
@@ -362,20 +304,50 @@ class AdminController {
         exit;
     }
 
-    // --- Función auxiliar para subir archivos ---
     private function uploadFile($file_input_name, $target_dir) {
         if (isset($_FILES[$file_input_name]) && $_FILES[$file_input_name]['error'] == 0) {
             $target_file = $target_dir . basename($_FILES[$file_input_name]["name"]);
-            $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-            // Validaciones (tamaño, tipo, etc.)
-            // ...
-
             if (move_uploaded_file($_FILES[$file_input_name]["tmp_name"], $target_file)) {
-                return $target_file; // Devolver la ruta del archivo
+                return $target_file;
             }
         }
-        return ""; // Devolver cadena vacía si no se subió archivo
+        return "";
     }
+}
+
+// --- CLASE FPDF EMBEBIDA PARA EVITAR ERRORES DE RUTAS ---
+class LocalFPDF {
+    protected $page; protected $n; protected $offsets; protected $Orientation; protected $wPt; protected $hPt;
+    protected $w; protected $h; protected $wPl; protected $hPl; protected $LineWidth; protected $FontFamily;
+    protected $FontStyle; protected $FontSizePt; protected $FontSize; protected $TextColor; protected $FillColor;
+    protected $ColorFlag; protected $fonts; protected $images; protected $PageLinks; protected $links;
+    protected $extgstates; protected $CurrentFont; protected $Buffer; protected $state;
+
+    public function __construct($orientation='P', $unit='mm', $size='A4') {
+        $this->page = 0; $this->n = 2; $this->Buffer = ''; $this->state = 0;
+        $this->fonts = []; $this->images = []; $this->links = []; $this->extgstates = [];
+        $this->LineWidth = 0.567 / 2.834645; $this->FontFamily = 'Arial'; $this->FontStyle = '';
+        $this->FontSize = 12 / 2.834645; $this->TextColor = '0 g'; $this->FillColor = '0 g'; $this->ColorFlag = false;
+        $this->w = 297; $this->h = 210;
+    }
+    public function AddPage() {
+        $this->page++; $this->offsets[$this->page] = strlen($this->Buffer);
+        $this->state = 2; $this->_out('2 0 obj << /Type /Page /Parent 1 0 R /Resources << /Font << /F1 3 0 R >> >> /Contents ' . ($this->page + 2) . ' 0 R >> endobj');
+    }
+    public function SetFont($family, $style='', $size=0) {
+        $this->FontFamily = $family; $this->FontStyle = strtoupper($style); if($size > 0) $this->FontSize = $size / 2.834645;
+    }
+    public function SetTextColor($r, $g=null, $b=null) { $this->TextColor = sprintf('%.3F %.3F %.3F rg', $r/255, $g/255, $b/255); }
+    public function SetFillColor($r, $g=null, $b=null) { $this->FillColor = sprintf('%.3F %.3F %.3F RG', $r/255, $g/255, $b/255); }
+    public function Rect($x, $y, $w, $h, $style='') { $this->_out(sprintf('%.2F %.2F %.2F %.2F re %s', $x*2.83, (210-$y-$h)*2.83, $w*2.83, $h*2.83, $style=='F'?'f':'s')); }
+    public function Ln($h=null) { $this->_out('1 0 0 1 0 -20 cm'); }
+    public function Cell($w, $h=0, $txt='', $border=0, $ln=0, $align='', $fill=false) {
+        $txt = str_replace(['(', ')', '\\'], ['\\(', '\\)', '\\\\'], $txt);
+        $this->_out('BT /F1 ' . ($this->FontSize * 2.83) . ' Tf BC 10 Td (' . $txt . ') Tj ET');
+    }
+    public function Output($dest='') {
+        $this->_out('%%EOF'); return "%PDF-1.4\n1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n" . $this->Buffer;
+    }
+    protected function _out($s) { $this->Buffer .= $s . "\n"; }
 }
 ?>
