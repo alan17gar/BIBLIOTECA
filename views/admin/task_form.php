@@ -24,13 +24,13 @@ include_once 'views/includes/header.php';
         </div>
 
         <div class="form-group">
-            <label for="usuario_asignado_id">Asignar a Estudiante</label>
+            <label for="usuario_asignado_id">Asignar a Usuario</label>
             <select id="usuario_asignado_id" name="usuario_asignado_id" class="form-control" required>
-                <option value="">-- Selecciona un estudiante --</option>
+                <option value="">-- Selecciona un usuario --</option>
                 <?php
-                // Iterar sobre los usuarios (estudiantes) pasados desde el controlador
-                if (isset($students) && $students->rowCount() > 0) {
-                    while ($row = $students->fetch(PDO::FETCH_ASSOC)) {
+                // Iterar sobre los usuarios pasados desde el controlador
+                if (isset($users) && $users->rowCount() > 0) {
+                    while ($row = $users->fetch(PDO::FETCH_ASSOC)) {
                         echo "<option value='" . htmlspecialchars($row['id']) . "'>" . htmlspecialchars($row['nombre_completo']) . " (" . htmlspecialchars($row['nombre_usuario']) . ")</option>";
                     }
                 }

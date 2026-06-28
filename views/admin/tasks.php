@@ -16,7 +16,7 @@ include_once 'views/includes/header.php';
         <thead>
             <tr>
                 <th>Título</th>
-                <th>Estudiante Asignado</th>
+                <th>Usuario Asignado</th>
                 <th>Libro Relacionado</th>
                 <th>Fecha Límite</th>
                 <th>Estado</th>
@@ -31,7 +31,7 @@ include_once 'views/includes/header.php';
 
                     echo "<tr>";
                     echo "<td>" . htmlspecialchars($titulo) . "</td>";
-                    echo "<td>" . htmlspecialchars($estudiante_nombre) . "</td>";
+                    echo "<td>" . htmlspecialchars($usuario_nombre) . "</td>";
                     echo "<td>" . htmlspecialchars($libro_titulo) . "</td>";
                     echo "<td>" . date("d/m/Y", strtotime($fecha_limite)) . "</td>";
                     echo "<td><span class='status " . $status_class . "'>" . htmlspecialchars(ucfirst($estado)) . "</span></td>";

@@ -9,7 +9,7 @@ class User {
     public $id;
     public $nombre_usuario;
     public $password;
-    public $rol; // 'admin' o 'student'
+    public $rol; // 'admin'
     public $nombre_completo;
     public $correo;
     public $fecha_creacion;

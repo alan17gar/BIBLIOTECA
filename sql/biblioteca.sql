@@ -12,7 +12,7 @@ CREATE TABLE `usuarios` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre_usuario` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `rol` enum('admin','student') NOT NULL,
+  `rol` enum('admin') NOT NULL,
   `nombre_completo` varchar(100) NOT NULL,
   `correo` varchar(100) NOT NULL,
   `fecha_creacion` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -94,14 +94,3 @@ INSERT INTO `libros` (`titulo`, `autor`, `isbn`, `categoria`, `sinopsis`, `porta
 ('1984', 'George Orwell', '978-84-9989-094-4', 'Distopía', 'Una visión sombría de un futuro totalitario donde el pensamiento es controlado.', 'public/images/covers/cover4.jpg', 4, 4, 'Pasillo A, Estante 2'),
 ('El Principito', 'Antoine de Saint-Exupéry', '978-84-9838-149-8', 'Infantil', 'Un piloto se encuentra con un joven príncipe que ha caído a la Tierra desde un pequeño asteroide.', 'public/images/covers/cover5.jpg', 10, 10, 'Sección Infantil');
 
--- Tareas de prueba
--- Se deja comentado ya que depende de IDs de usuario que ahora son dinámicos.
--- El admin puede crearlas desde la interfaz.
--- INSERT INTO `tareas` (`titulo`, `descripcion`, `usuario_asignado_id`, `libro_relacionado_id`, `fecha_limite`) VALUES
--- ('Reseña de Don Quijote', 'Escribe una reseña de 300 palabras sobre la primera parte de Don Quijote.', 2, 1, '2025-12-01'),
--- ('Análisis de personajes en 1984', 'Describe el desarrollo del personaje de Winston Smith a lo largo de la novela.', 3, 4, '2025-11-25');
-
--- Prestamo de prueba
--- Se deja comentado por la misma razón que las tareas.
--- INSERT INTO `prestamos` (`libro_id`, `usuario_id`, `fecha_devolucion_estimada`, `estado`) VALUES
--- (2, 2, '2025-10-30', 'prestado');

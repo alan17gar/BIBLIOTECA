@@ -71,10 +71,9 @@ class Loan {
     public function readAll() {
         $query = "SELECT
                     p.id, p.libro_id, p.usuario_id, p.fecha_prestamo, p.fecha_devolucion_estimada, p.fecha_devolucion_real, p.estado, p.multa,
-                    l.titulo as libro_titulo, u.nombre_usuario as estudiante_nombre
+                    l.titulo as libro_titulo
                   FROM " . $this->table_name . " p
                   LEFT JOIN libros l ON p.libro_id = l.id
-                  LEFT JOIN usuarios u ON p.usuario_id = u.id
                   ORDER BY p.fecha_prestamo DESC";
 
         $stmt = $this->conn->prepare($query);
