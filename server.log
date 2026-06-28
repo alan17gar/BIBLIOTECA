@@ -1,0 +1,43 @@
+[Sun Jun 28 03:17:08 2026] PHP 8.3.6 Development Server (http://localhost:8000) started
+[Sun Jun 28 03:17:19 2026] [::1]:36804 Accepted
+[Sun Jun 28 03:17:20 2026] [::1]:36804 [200]: HEAD /auth/login
+[Sun Jun 28 03:17:20 2026] [::1]:36804 Closing
+[Sun Jun 28 03:18:24 2026] [::1]:52288 Accepted
+[Sun Jun 28 03:18:24 2026] [::1]:52288 [200]: GET /auth/login
+[Sun Jun 28 03:18:24 2026] [::1]:52288 Closing
+[Sun Jun 28 03:18:25 2026] [::1]:52296 Accepted
+[Sun Jun 28 03:18:25 2026] [::1]:52308 Accepted
+[Sun Jun 28 03:18:25 2026] [::1]:52296 [200]: GET /public/css/style.css
+[Sun Jun 28 03:18:25 2026] [::1]:52308 [200]: GET /public/js/main.js
+[Sun Jun 28 03:18:25 2026] [::1]:52296 Closing
+[Sun Jun 28 03:18:25 2026] [::1]:52308 Closing
+[Sun Jun 28 03:18:26 2026] [::1]:33102 Accepted
+[Sun Jun 28 03:18:27 2026] [::1]:33102 [302]: POST /auth/login
+[Sun Jun 28 03:18:27 2026] [::1]:33102 Closing
+[Sun Jun 28 03:18:27 2026] [::1]:33106 Accepted
+[Sun Jun 28 03:18:28 2026] [::1]:33106 [200]: GET /admin
+[Sun Jun 28 03:18:28 2026] [::1]:33106 Closing
+[Sun Jun 28 03:18:28 2026] [::1]:33122 Accepted
+[Sun Jun 28 03:18:28 2026] [::1]:33138 Accepted
+[Sun Jun 28 03:18:28 2026] [::1]:33122 [200]: GET /public/css/style.css
+[Sun Jun 28 03:18:28 2026] [::1]:33138 [200]: GET /public/js/main.js
+[Sun Jun 28 03:18:28 2026] [::1]:33122 Closing
+[Sun Jun 28 03:18:28 2026] [::1]:33138 Closing
+[Sun Jun 28 03:18:28 2026] [::1]:33150 Accepted
+[Sun Jun 28 03:18:28 2026] [::1]:33150 [200]: GET /admin/loans
+[Sun Jun 28 03:18:28 2026] [::1]:33150 Closing
+[Sun Jun 28 03:18:28 2026] [::1]:33162 Accepted
+[Sun Jun 28 03:18:28 2026] [::1]:33164 Accepted
+[Sun Jun 28 03:18:28 2026] [::1]:33162 [200]: GET /public/css/style.css
+[Sun Jun 28 03:18:28 2026] [::1]:33164 [200]: GET /public/js/main.js
+[Sun Jun 28 03:18:28 2026] [::1]:33162 Closing
+[Sun Jun 28 03:18:28 2026] [::1]:33164 Closing
+[Sun Jun 28 03:18:29 2026] [::1]:33176 Accepted
+[Sun Jun 28 03:18:29 2026] [::1]:33176 [200]: GET /admin/tasks
+[Sun Jun 28 03:18:29 2026] [::1]:33176 Closing
+[Sun Jun 28 03:18:29 2026] [::1]:33180 Accepted
+[Sun Jun 28 03:18:29 2026] [::1]:33196 Accepted
+[Sun Jun 28 03:18:29 2026] [::1]:33180 [200]: GET /public/css/style.css
+[Sun Jun 28 03:18:29 2026] [::1]:33196 [200]: GET /public/js/main.js
+[Sun Jun 28 03:18:29 2026] [::1]:33180 Closing
+[Sun Jun 28 03:18:29 2026] [::1]:33196 Closing

@@ -28,7 +28,7 @@ return false;
 }
 
 public function readAll() {
-$query = "SELECT t.id, t.titulo, t.descripcion, t.fecha_limite, t.estado, u.nombre_usuario as estudiante_nombre, l.titulo as libro_titulo FROM " . $this->table_name . " t LEFT JOIN usuarios u ON t.usuario_asignado_id = u.id LEFT JOIN libros l ON t.libro_relacionado_id = l.id ORDER BY t.fecha_asignacion DESC";
+$query = "SELECT t.id, t.titulo, t.descripcion, t.fecha_limite, t.estado, u.nombre_usuario as usuario_nombre, l.titulo as libro_titulo FROM " . $this->table_name . " t LEFT JOIN usuarios u ON t.usuario_asignado_id = u.id LEFT JOIN libros l ON t.libro_relacionado_id = l.id ORDER BY t.fecha_asignacion DESC";
 $stmt = $this->conn->prepare($query);
 $stmt->execute();
 return $stmt;
