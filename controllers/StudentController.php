@@ -81,6 +81,7 @@ class StudentController {
         if ($this->loan->create()) {
             // Préstamo exitoso
             header("Location: " . BASE_PATH . "/student/loans");
+            exit;
         } else {
             // Error, probablemente no hay libros disponibles
             // Idealmente, manejar este error de forma más elegante

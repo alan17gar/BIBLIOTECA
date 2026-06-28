@@ -1,11 +1,15 @@
 <?php
+ob_start();
 // controllers/AdminController.php - Controlador para el panel de administración
+
+// Incluir librerías externas
+require_once __DIR__ . '/../libs/fpdf/fpdf.php';
 
 // Incluir los modelos necesarios
 require_once 'models/User.php';
 require_once 'models/Book.php';
 require_once 'models/Loan.php';
-require_once 'models/Task.php';
+require_once 'models/Student.php';
 require_once 'controllers/AuthController.php'; // Para usar los checks de rol
 
 class AdminController {
@@ -13,14 +17,14 @@ class AdminController {
     private $user;
     private $book;
     private $loan;
-    private $task;
+    private $student;
 
     public function __construct($db) {
         $this->db = $db;
         $this->user = new User($this->db);
         $this->book = new Book($this->db);
         $this->loan = new Loan($this->db);
-        $this->task = new Task($this->db);
+        $this->student = new Student($this->db);
 
         // Proteger todas las acciones del admin
         AuthController::requireAdmin();
@@ -39,7 +43,11 @@ class AdminController {
 
     // --- Gestión de Libros (CRUD) ---
     public function books() {
-        $stmt = $this->book->readAll();
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
+            $stmt = $this->book->search($_GET['search']);
+        } else {
+            $stmt = $this->book->readAll();
+        }
         require 'views/admin/books.php';
     }
 
@@ -70,11 +78,39 @@ class AdminController {
     public function editBook($id) {
         $this->book->id = $id;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Lógica de actualización...
+            // Obtener el estado actual del libro antes de actualizar
+            $this->book->readOne();
+            $old_total = $this->book->cantidad_total;
+            $old_disponible = $this->book->cantidad_disponible;
+
             $this->book->titulo = $_POST['titulo'];
-            // ... (resto de campos)
+            $this->book->autor = $_POST['autor'];
+            $this->book->isbn = $_POST['isbn'];
+            $this->book->categoria = $_POST['categoria'];
+            $this->book->sinopsis = $_POST['sinopsis'];
+
+            $new_total = $_POST['cantidad_total'];
+            $diferencia = $new_total - $old_total;
+
+            $this->book->cantidad_total = $new_total;
+            // Ajustar la cantidad disponible proporcionalmente al cambio en el total
+            $this->book->cantidad_disponible = max(0, $old_disponible + $diferencia);
+
+            $this->book->ubicacion_fisica = $_POST['ubicacion_fisica'];
+
+            // Mantener archivos existentes si no se suben nuevos
+            $this->book->readOne();
+            $old_portada = $this->book->portada;
+            $old_pdf = $this->book->pdf_ruta;
+
+            $new_portada = $this->uploadFile('portada', 'uploads/covers/');
+            $new_pdf = $this->uploadFile('pdf', 'uploads/pdfs/');
+
+            $this->book->portada = !empty($new_portada) ? $new_portada : $old_portada;
+            $this->book->pdf_ruta = !empty($new_pdf) ? $new_pdf : $old_pdf;
+
             if ($this->book->update()) {
-                header("Location: " . BASE_PATH . "/admin/books");
+                header("Location: " . BASE_PATH . "/admin/books?success=1");
                 exit;
             }
         } else {
@@ -97,7 +133,53 @@ class AdminController {
         require 'views/admin/users.php';
     }
 
-    // ... (métodos para createUser, editUser, deleteUser similares a los de libros)
+    public function createUser() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->user->nombre_usuario = $_POST['nombre_usuario'];
+            $this->user->password = $_POST['password'];
+            $this->user->rol = $_POST['rol'];
+            $this->user->nombre_completo = $_POST['nombre_completo'];
+            $this->user->correo = $_POST['correo'];
+
+            if ($this->user->create()) {
+                header("Location: " . BASE_PATH . "/admin/users?success=1");
+                exit;
+            }
+        }
+        require 'views/admin/user_form.php';
+    }
+
+    public function editUser($id) {
+        $this->user->id = $id;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->user->nombre_usuario = $_POST['nombre_usuario'];
+            $this->user->rol = $_POST['rol'];
+            $this->user->nombre_completo = $_POST['nombre_completo'];
+            $this->user->correo = $_POST['correo'];
+
+            if (!empty($_POST['password'])) {
+                $this->user->password = $_POST['password'];
+            }
+
+            if ($this->user->update()) {
+                header("Location: " . BASE_PATH . "/admin/users?success=1");
+                exit;
+            }
+        } else {
+            $this->user->readOne();
+            require 'views/admin/user_form.php';
+        }
+    }
+
+    public function deleteUser($id) {
+        $this->user->id = $id;
+        if ($id != $_SESSION['user_id'] && $this->user->delete()) {
+            header("Location: " . BASE_PATH . "/admin/users?success=1");
+            exit;
+        }
+        header("Location: " . BASE_PATH . "/admin/users?error=1");
+        exit;
+    }
 
     // --- Gestión de Préstamos ---
     public function loans() {
@@ -105,45 +187,179 @@ class AdminController {
         require 'views/admin/loans.php';
     }
 
-    public function returnLoan($id) {
-        $this->loan->id = $id;
-        if ($this->loan->returnBook()) {
-            header("Location: " . BASE_PATH . "/admin/loans");
+    public function createLoan() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->loan->libro_id = $_POST['libro_id'];
+            // Mapear el ID del estudiante desde el formulario (se usa usuario_id en el select por compatibilidad)
+            $this->loan->estudiante_id = $_POST['usuario_id'];
+            $this->loan->ubicacion_lectura = $_POST['ubicacion_lectura'];
+            $this->loan->estado = 'prestado';
+            $this->loan->multa = 0;
+
+            if ($this->loan->create()) {
+                header("Location: " . BASE_PATH . "/admin/loans?success=1");
+                exit;
+            } else {
+                $error = "No se pudo registrar el préstamo. Verifique la disponibilidad del libro.";
+            }
+        }
+
+        $books = $this->book->readAll();
+        $students = $this->student->readAll();
+        require 'views/admin/loan_form.php';
+    }
+
+    public function createStudentQuick() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $this->student->cedula = $_POST['cedula'];
+            $this->student->nombre_completo = $_POST['nombre_completo'];
+            $this->student->anio_secundaria = $_POST['anio_secundaria'];
+
+            if ($this->student->create()) {
+                $new_id = $this->db->lastInsertId();
+                echo json_encode([
+                    'success' => true,
+                    'id' => $new_id,
+                    'nombre_completo' => $this->student->nombre_completo
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Error al crear estudiante']);
+            }
             exit;
         }
     }
 
-    // --- Gestión de Tareas ---
-    public function tasks() {
-        $stmt = $this->task->readAll();
-        require 'views/admin/tasks.php';
+    public function returnLoan($id) {
+        $this->loan->id = $id;
+        if ($this->loan->returnBook()) {
+            header("Location: " . BASE_PATH . "/admin/loans?returned=1");
+            exit;
+        }
     }
 
-    public function createTask() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Procesar el formulario enviado
-            $this->task->titulo = $_POST['titulo'];
-            $this->task->descripcion = $_POST['descripcion'];
-            $this->task->usuario_asignado_id = $_POST['usuario_asignado_id'];
-            $this->task->libro_relacionado_id = !empty($_POST['libro_relacionado_id']) ? $_POST['libro_relacionado_id'] : null;
-            $this->task->fecha_limite = $_POST['fecha_limite'];
+    // --- Métodos de Exportación ---
 
-            if ($this->task->create()) {
-                // Redirigir a la lista de tareas si se crea con éxito
-                header("Location: " . BASE_PATH . "/admin/tasks");
-                exit;
-            } else {
-                // Manejar error
-                echo "Error al crear la tarea.";
-            }
-        } else {
-            // Mostrar el formulario de creación
-            // Necesitamos pasarle la lista de estudiantes y libros a la vista
-            $students = $this->user->readAll(); // Asumimos que readAll() devuelve todos los usuarios
-            $books = $this->book->readAll();
+    public function exportBooksPDF() {
+        while (ob_get_level()) { ob_end_clean(); }
 
-            require 'views/admin/task_form.php';
+        $pdf = new FPDF('P', 'mm', 'A4');
+        $pdf->AddPage();
+
+        // Encabezado Estilizado
+        $pdf->SetFillColor(98, 0, 234);
+        $pdf->Rect(0, 0, 210, 30, 'F');
+
+        $pdf->SetFont('Arial', 'B', 18);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->Cell(0, 15, utf8_decode('INVENTARIO DE LIBROS'), 0, 1, 'C');
+
+        $pdf->Ln(15);
+
+        // Cabecera de Tabla
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFillColor(26, 35, 126);
+        $pdf->SetTextColor(255, 255, 255);
+
+        $pdf->Cell(75, 10, utf8_decode('Título'), 1, 0, 'C', true);
+        $pdf->Cell(50, 10, utf8_decode('Autor'), 1, 0, 'C', true);
+        $pdf->Cell(45, 10, utf8_decode('ISBN'), 1, 0, 'C', true);
+        $pdf->Cell(20, 10, utf8_decode('Stock'), 1, 1, 'C', true);
+
+        $pdf->SetFont('Arial', '', 9);
+        $pdf->SetTextColor(0, 0, 0);
+
+        $stmt = $this->book->readAll();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pdf->Cell(75, 8, utf8_decode($row['titulo']), 1, 0, 'L');
+            $pdf->Cell(50, 8, utf8_decode($row['autor']), 1, 0, 'L');
+            $pdf->Cell(45, 8, utf8_decode($row['isbn']), 1, 0, 'C');
+            $pdf->Cell(20, 8, utf8_decode($row['cantidad_disponible']), 1, 1, 'C');
         }
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="inventario_libros_' . date('Ymd') . '.pdf"');
+        echo $pdf->Output('S');
+        exit;
+    }
+
+    public function exportBooksExcel() {
+        while (ob_get_level()) { ob_end_clean(); }
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename="libros_inventario.xls"');
+        echo "Título\tAutor\tISBN\tStock\n";
+        $stmt = $this->book->readAll();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo "{$row['titulo']}\t{$row['autor']}\t{$row['isbn']}\t{$row['cantidad_disponible']}\n";
+        }
+        exit;
+    }
+
+    public function exportLoansPDF() {
+        while (ob_get_level()) { ob_end_clean(); }
+
+        $pdf = new FPDF('L', 'mm', 'A4');
+        $pdf->AddPage();
+
+        // Encabezado Elegante
+        $pdf->SetFillColor(98, 0, 234); // Morado primario del sistema
+        $pdf->Rect(0, 0, 297, 40, 'F');
+
+        $pdf->SetFont('Arial', 'B', 22);
+        $pdf->SetTextColor(255, 255, 255);
+        $pdf->Cell(0, 20, utf8_decode('SISTEMA DE BIBLIOTECA'), 0, 1, 'C');
+        $pdf->SetFont('Arial', '', 14);
+        $pdf->Cell(0, 10, utf8_decode('REPORTE DETALLADO DE PRÉSTAMOS'), 0, 1, 'C');
+
+        $pdf->Ln(20);
+
+        // Tabla Estilizada
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFillColor(26, 35, 126); // Azul oscuro
+        $pdf->SetTextColor(255, 255, 255);
+
+        // Cabeceras: Cédula, Estudiante, Año, Libro Prestado, Fecha, Ubicación
+        $pdf->Cell(30, 10, utf8_decode('Cédula'), 1, 0, 'C', true);
+        $pdf->Cell(60, 10, utf8_decode('Estudiante'), 1, 0, 'C', true);
+        $pdf->Cell(30, 10, utf8_decode('Año'), 1, 0, 'C', true);
+        $pdf->Cell(80, 10, utf8_decode('Libro Prestado'), 1, 0, 'C', true);
+        $pdf->Cell(35, 10, utf8_decode('Fecha'), 1, 0, 'C', true);
+        $pdf->Cell(42, 10, utf8_decode('Ubicación'), 1, 1, 'C', true);
+
+        $pdf->SetFont('Arial', '', 9);
+        $pdf->SetTextColor(0, 0, 0);
+
+        $stmt = $this->loan->readAll();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $pdf->Cell(30, 8, utf8_decode($row['estudiante_cedula']), 1, 0, 'C');
+            $pdf->Cell(60, 8, utf8_decode($row['nombre_estudiante']), 1, 0, 'L');
+            $pdf->Cell(30, 8, utf8_decode($row['anio_estudiante']), 1, 0, 'C');
+            $pdf->Cell(80, 8, utf8_decode($row['libro_titulo']), 1, 0, 'L');
+            $pdf->Cell(35, 8, date("d/m/Y", strtotime($row['fecha_prestamo'])), 1, 0, 'C');
+            $pdf->Cell(42, 8, utf8_decode($row['ubicacion_lectura']), 1, 1, 'L');
+        }
+
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="reporte_prestamos_' . date('Ymd') . '.pdf"');
+        header('Cache-Control: private, max-age=0, must-revalidate');
+        header('Pragma: public');
+
+        echo $pdf->Output('S');
+        exit;
+    }
+
+    public function exportLoansExcel() {
+        while (ob_get_level()) { ob_end_clean(); }
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment; filename="prestamos_historial.xls"');
+        echo "Libro\tEstudiante\tCédula\tUbicación\tFecha\n";
+        $stmt = $this->loan->readAll();
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            // Ajustar nombres de campos según el nuevo readAll()
+            $nombre = isset($row['nombre_estudiante']) ? $row['nombre_estudiante'] : '-';
+            $cedula = isset($row['estudiante_cedula']) ? $row['estudiante_cedula'] : '-';
+            echo "{$row['libro_titulo']}\t{$nombre}\t{$cedula}\t{$row['ubicacion_lectura']}\t{$row['fecha_prestamo']}\n";
+        }
+        exit;
     }
 
     // --- Función auxiliar para subir archivos ---
