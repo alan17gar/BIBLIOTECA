@@ -15,9 +15,7 @@ include_once 'views/includes/header.php';
         <thead>
             <tr>
                 <th>Libro</th>
-                <th>Estudiante</th>
                 <th>Fecha de Préstamo</th>
-                <th>Fecha de Devolución</th>
                 <th>Estado</th>
                 <th>Acciones</th>
             </tr>
@@ -31,9 +29,7 @@ include_once 'views/includes/header.php';
 
                     echo "<tr>";
                     echo "<td>" . htmlspecialchars($libro_titulo) . "</td>";
-                    echo "<td>" . htmlspecialchars($estudiante_nombre) . "</td>";
                     echo "<td>" . date("d/m/Y", strtotime($fecha_prestamo)) . "</td>";
-                    echo "<td>" . date("d/m/Y", strtotime($fecha_devolucion_estimada)) . "</td>";
                     echo "<td><span class='status " . $status_class . "'>" . htmlspecialchars($estado) . "</span></td>";
                     echo "<td class='actions'>";
                     if ($estado == 'prestado' || $estado == 'retrasado') {
@@ -46,7 +42,7 @@ include_once 'views/includes/header.php';
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='6'>No hay préstamos registrados.</td></tr>";
+                echo "<tr><td colspan='4'>No hay préstamos registrados.</td></tr>";
             }
             ?>
         </tbody>

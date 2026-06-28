@@ -34,8 +34,6 @@
                 if (isset($_SESSION['user_role'])) {
                     if ($_SESSION['user_role'] === 'admin') {
                         include 'nav_admin.php';
-                    } else if ($_SESSION['user_role'] === 'student') {
-                        include 'nav_student.php';
                     }
                 }
                 ?>

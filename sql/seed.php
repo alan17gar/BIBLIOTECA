@@ -34,18 +34,11 @@ $users_to_create = [
         'correo' => 'admin@biblioteca.app'
     ],
     [
-        'nombre_usuario' => 'estudiante1',
-        'password' => 'estudiante123',
-        'rol' => 'student',
-        'nombre_completo' => 'Juan Pérez',
-        'correo' => 'juan.perez@email.com'
-    ],
-    [
-        'nombre_usuario' => 'estudiante2',
-        'password' => 'estudiante123',
-        'rol' => 'student',
-        'nombre_completo' => 'María García',
-        'correo' => 'maria.garcia@email.com'
+        'nombre_usuario' => 'admin2',
+        'password' => 'admin123',
+        'rol' => 'admin',
+        'nombre_completo' => 'Asistente Administrativo',
+        'correo' => 'asistente@biblioteca.app'
     ]
 ];
 
