@@ -41,8 +41,7 @@ include_once 'views/includes/header.php';
         <div class="form-group">
             <label for="rol">Rol</label>
             <select id="rol" name="rol" class="form-control" required>
-                <option value="student" <?php echo ($is_edit && $this->user->rol == 'student') ? 'selected' : ''; ?>>Estudiante</option>
-                <option value="admin" <?php echo ($is_edit && $this->user->rol == 'admin') ? 'selected' : ''; ?>>Administrador</option>
+                <option value="admin" selected>Administrador</option>
             </select>
         </div>
 

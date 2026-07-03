@@ -41,15 +41,6 @@ include_once 'views/includes/header.php';
         </div>
     </div>
 
-    <div class="stat-card glass-card">
-        <div class="stat-icon icon-tasks">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-        </div>
-        <div class="stat-info">
-            <p>Tareas</p>
-            <span>-</span>
-        </div>
-    </div>
 </div>
 
 <div class="quick-actions glass-card" style="padding: 2.5rem;">

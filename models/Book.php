@@ -155,25 +155,37 @@ class Book {
 
     // --- Métodos Adicionales ---
 
-    // Buscar libros (por título, autor, categoría)
-    public function search($keywords) {
-        $query = "SELECT * FROM " . $this->table_name . "
-                  WHERE
-                    titulo LIKE ? OR autor LIKE ? OR categoria LIKE ?
-                  ORDER BY
-                    titulo ASC";
+    // Buscar libros con filtros avanzados
+    public function search($filters = []) {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE 1=1";
+        $params = [];
+
+        if (!empty($filters['keyword'])) {
+            $query .= " AND (titulo LIKE ? OR autor LIKE ? OR isbn LIKE ?)";
+            $keyword = "%{$filters['keyword']}%";
+            $params[] = $keyword;
+            $params[] = $keyword;
+            $params[] = $keyword;
+        }
+
+        if (!empty($filters['categoria'])) {
+            $query .= " AND categoria = ?";
+            $params[] = $filters['categoria'];
+        }
+
+        if (!empty($filters['ubicacion_fisica'])) {
+            $query .= " AND ubicacion_fisica = ?";
+            $params[] = $filters['ubicacion_fisica'];
+        }
+
+        if (!empty($filters['bicentenaria'])) {
+            $query .= " AND categoria = 'Colección Bicentenaria'";
+        }
+
+        $query .= " ORDER BY titulo ASC";
 
         $stmt = $this->conn->prepare($query);
-
-        // Sanitizar y vincular el término de búsqueda
-        $keywords = htmlspecialchars(strip_tags($keywords));
-        $keywords = "%{$keywords}%"; // Para búsquedas parciales
-
-        $stmt->bindParam(1, $keywords);
-        $stmt->bindParam(2, $keywords);
-        $stmt->bindParam(3, $keywords);
-
-        $stmt->execute();
+        $stmt->execute($params);
         return $stmt;
     }
 

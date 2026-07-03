@@ -10,7 +10,6 @@ require_once 'config/db.php';
 // Incluir los controladores base para tener una referencia
 require_once 'controllers/AuthController.php';
 require_once 'controllers/AdminController.php';
-require_once 'controllers/StudentController.php';
 
 // Instanciar la conexión a la base de datos
 $database = new Database();
@@ -76,10 +75,6 @@ if (file_exists('controllers/' . $controller_name . '.php')) {
     switch ($parts[0]) {
         case 'admin':
             $controller = new AdminController($db);
-            $controller->index();
-            break;
-        case 'student':
-            $controller = new StudentController($db);
             $controller->index();
             break;
         default:

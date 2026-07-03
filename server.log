@@ -1,43 +1,30 @@
-[Sun Jun 28 03:17:08 2026] PHP 8.3.6 Development Server (http://localhost:8000) started
-[Sun Jun 28 03:17:19 2026] [::1]:36804 Accepted
-[Sun Jun 28 03:17:20 2026] [::1]:36804 [200]: HEAD /auth/login
-[Sun Jun 28 03:17:20 2026] [::1]:36804 Closing
-[Sun Jun 28 03:18:24 2026] [::1]:52288 Accepted
-[Sun Jun 28 03:18:24 2026] [::1]:52288 [200]: GET /auth/login
-[Sun Jun 28 03:18:24 2026] [::1]:52288 Closing
-[Sun Jun 28 03:18:25 2026] [::1]:52296 Accepted
-[Sun Jun 28 03:18:25 2026] [::1]:52308 Accepted
-[Sun Jun 28 03:18:25 2026] [::1]:52296 [200]: GET /public/css/style.css
-[Sun Jun 28 03:18:25 2026] [::1]:52308 [200]: GET /public/js/main.js
-[Sun Jun 28 03:18:25 2026] [::1]:52296 Closing
-[Sun Jun 28 03:18:25 2026] [::1]:52308 Closing
-[Sun Jun 28 03:18:26 2026] [::1]:33102 Accepted
-[Sun Jun 28 03:18:27 2026] [::1]:33102 [302]: POST /auth/login
-[Sun Jun 28 03:18:27 2026] [::1]:33102 Closing
-[Sun Jun 28 03:18:27 2026] [::1]:33106 Accepted
-[Sun Jun 28 03:18:28 2026] [::1]:33106 [200]: GET /admin
-[Sun Jun 28 03:18:28 2026] [::1]:33106 Closing
-[Sun Jun 28 03:18:28 2026] [::1]:33122 Accepted
-[Sun Jun 28 03:18:28 2026] [::1]:33138 Accepted
-[Sun Jun 28 03:18:28 2026] [::1]:33122 [200]: GET /public/css/style.css
-[Sun Jun 28 03:18:28 2026] [::1]:33138 [200]: GET /public/js/main.js
-[Sun Jun 28 03:18:28 2026] [::1]:33122 Closing
-[Sun Jun 28 03:18:28 2026] [::1]:33138 Closing
-[Sun Jun 28 03:18:28 2026] [::1]:33150 Accepted
-[Sun Jun 28 03:18:28 2026] [::1]:33150 [200]: GET /admin/loans
-[Sun Jun 28 03:18:28 2026] [::1]:33150 Closing
-[Sun Jun 28 03:18:28 2026] [::1]:33162 Accepted
-[Sun Jun 28 03:18:28 2026] [::1]:33164 Accepted
-[Sun Jun 28 03:18:28 2026] [::1]:33162 [200]: GET /public/css/style.css
-[Sun Jun 28 03:18:28 2026] [::1]:33164 [200]: GET /public/js/main.js
-[Sun Jun 28 03:18:28 2026] [::1]:33162 Closing
-[Sun Jun 28 03:18:28 2026] [::1]:33164 Closing
-[Sun Jun 28 03:18:29 2026] [::1]:33176 Accepted
-[Sun Jun 28 03:18:29 2026] [::1]:33176 [200]: GET /admin/tasks
-[Sun Jun 28 03:18:29 2026] [::1]:33176 Closing
-[Sun Jun 28 03:18:29 2026] [::1]:33180 Accepted
-[Sun Jun 28 03:18:29 2026] [::1]:33196 Accepted
-[Sun Jun 28 03:18:29 2026] [::1]:33180 [200]: GET /public/css/style.css
-[Sun Jun 28 03:18:29 2026] [::1]:33196 [200]: GET /public/js/main.js
-[Sun Jun 28 03:18:29 2026] [::1]:33180 Closing
-[Sun Jun 28 03:18:29 2026] [::1]:33196 Closing
+[Fri Jul  3 22:17:45 2026] PHP 8.3.6 Development Server (http://0.0.0.0:8000) started
+[Fri Jul  3 22:18:33 2026] 127.0.0.1:60632 Accepted
+[Fri Jul  3 22:18:33 2026] PHP Warning:  require_once(controllers/StudentController.php): Failed to open stream: No such file or directory in /app/index.php on line 13
+[Fri Jul  3 22:18:33 2026] PHP Fatal error:  Uncaught Error: Failed opening required 'controllers/StudentController.php' (include_path='.:/usr/share/php') in /app/index.php:13
+Stack trace:
+#0 {main}
+  thrown in /app/index.php on line 13
+[Fri Jul  3 22:18:33 2026] 127.0.0.1:60632 [500]: GET /auth/login - Uncaught Error: Failed opening required 'controllers/StudentController.php' (include_path='.:/usr/share/php') in /app/index.php:13
+Stack trace:
+#0 {main}
+  thrown in /app/index.php on line 13
+[Fri Jul  3 22:18:33 2026] 127.0.0.1:60632 Closing
+[Fri Jul  3 23:10:48 2026] 127.0.0.1:59032 Accepted
+[Fri Jul  3 23:10:48 2026] 127.0.0.1:59032 [200]: GET /index.php?url=auth/login
+[Fri Jul  3 23:10:48 2026] 127.0.0.1:59032 Closing
+[Fri Jul  3 23:10:48 2026] 127.0.0.1:59044 Accepted
+[Fri Jul  3 23:10:48 2026] 127.0.0.1:59050 Accepted
+[Fri Jul  3 23:10:48 2026] 127.0.0.1:59044 [200]: GET /public/css/style.css
+[Fri Jul  3 23:10:48 2026] 127.0.0.1:59050 [200]: GET /public/js/main.js
+[Fri Jul  3 23:10:48 2026] 127.0.0.1:59044 Closing
+[Fri Jul  3 23:10:48 2026] 127.0.0.1:59050 Closing
+[Fri Jul  3 23:13:51 2026] 127.0.0.1:38210 Accepted
+[Fri Jul  3 23:13:51 2026] 127.0.0.1:38210 [200]: GET /index.php?url=auth/login
+[Fri Jul  3 23:13:51 2026] 127.0.0.1:38210 Closing
+[Fri Jul  3 23:13:51 2026] 127.0.0.1:38224 Accepted
+[Fri Jul  3 23:13:51 2026] 127.0.0.1:38224 [200]: GET /public/css/style.css
+[Fri Jul  3 23:13:51 2026] 127.0.0.1:38224 Closing
+[Fri Jul  3 23:13:51 2026] 127.0.0.1:38238 Accepted
+[Fri Jul  3 23:13:51 2026] 127.0.0.1:38238 [200]: GET /public/js/main.js
+[Fri Jul  3 23:13:51 2026] 127.0.0.1:38238 Closing

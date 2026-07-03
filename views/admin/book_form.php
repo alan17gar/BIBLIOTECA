@@ -33,7 +33,22 @@ include_once 'views/includes/header.php';
 
         <div class="form-group">
             <label for="categoria">Categoría</label>
-            <input type="text" id="categoria" name="categoria" class="form-control" value="<?php echo $is_edit ? htmlspecialchars($this->book->categoria) : ''; ?>">
+            <select id="categoria" name="categoria" class="form-control" required>
+                <?php
+                $categorias = [
+                    'Ciencia Ficción', 'Fantasía', 'Novela Negra / Thriller', 'Romántico',
+                    'Historia', 'Terror / Horror', 'Realismo Contemporáneo', 'Biografías y Memorias',
+                    'Ensayo / Divulgación', 'Desarrollo Personal', 'Historia y Política',
+                    'Cocina y Estilo de Vid.', 'Poesía', 'Novela Gráfica / Cómic', 'Clásicos',
+                    'Colección Bicentenaria'
+                ];
+                $current_cat = isset($this->book->categoria) ? $this->book->categoria : '';
+                foreach ($categorias as $cat) {
+                    $selected = ($current_cat == $cat) ? 'selected' : '';
+                    echo "<option value='$cat' $selected>$cat</option>";
+                }
+                ?>
+            </select>
         </div>
 
         <div class="form-group">
@@ -48,7 +63,16 @@ include_once 'views/includes/header.php';
 
         <div class="form-group">
             <label for="ubicacion_fisica">Ubicación Física</label>
-            <input type="text" id="ubicacion_fisica" name="ubicacion_fisica" class="form-control" value="<?php echo $is_edit ? htmlspecialchars($this->book->ubicacion_fisica) : ''; ?>">
+            <select id="ubicacion_fisica" name="ubicacion_fisica" class="form-control" required>
+                <?php
+                $ubicaciones = ['Estante 1', 'Estante 2', 'Estante 3', 'Estante 4', 'Estante 5', 'Estante 6', 'Estante 7'];
+                $current_ub = isset($this->book->ubicacion_fisica) ? $this->book->ubicacion_fisica : '';
+                foreach ($ubicaciones as $ub) {
+                    $selected = ($current_ub == $ub) ? 'selected' : '';
+                    echo "<option value='$ub' $selected>$ub</option>";
+                }
+                ?>
+            </select>
         </div>
 
         <div class="form-group">
