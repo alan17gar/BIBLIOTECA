@@ -19,7 +19,14 @@
 
     <header class="main-header">
         <div class="container">
-            <a href="<?php echo BASE_PATH; ?>/" class="logo">
+            <?php
+            $logo_url = BASE_PATH . "/";
+            if (isset($_SESSION['user_id'])) {
+                // Si la sesión está activa, redirigir al Dashboard administrativo
+                $logo_url = BASE_PATH . "/admin";
+            }
+            ?>
+            <a href="<?php echo $logo_url; ?>" class="logo">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
                 <span>BIBLIOTECA</span>
             </a>
@@ -30,13 +37,9 @@
 
             <nav class="main-nav" id="main-nav">
                 <?php
-                // Cargar la navegación correspondiente según el rol del usuario
-                if (isset($_SESSION['user_role'])) {
-                    if ($_SESSION['user_role'] === 'admin') {
-                        include 'nav_admin.php';
-                    } else if ($_SESSION['user_role'] === 'student') {
-                        include 'nav_student.php';
-                    }
+                // Sistema puramente administrativo: cargar navegación de admin para usuarios autenticados
+                if (isset($_SESSION['user_id'])) {
+                    include 'nav_admin.php';
                 }
                 ?>
             </nav>
@@ -45,3 +48,21 @@
 
     <main class="main-content">
         <div class="container">
+
+        <!-- Contenedor para notificaciones -->
+        <div id="notification-container"></div>
+
+        <!-- Modal de Confirmación Estilizado -->
+        <div id="confirm-modal" class="modal-overlay" style="display:none;">
+            <div class="modal-content glass-card">
+                <div class="modal-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <h3 id="confirm-modal-title">¿Confirmar Acción?</h3>
+                <p id="confirm-modal-text">¿Estás seguro de que deseas realizar esta acción?</p>
+                <div class="modal-actions">
+                    <button id="confirm-modal-cancel" class="btn btn-secondary">Cancelar</button>
+                    <button id="confirm-modal-ok" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </div>

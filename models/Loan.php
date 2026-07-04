@@ -8,11 +8,11 @@ class Loan {
     // Propiedades del objeto Préstamo
     public $id;
     public $libro_id;
-    public $usuario_id;
     public $fecha_prestamo;
     public $fecha_devolucion_estimada;
     public $fecha_devolucion_real;
     public $estado; // 'prestado', 'devuelto', 'retrasado'
+    public $ubicacion_lectura; // 'Biblioteca', 'Aula con Profesor', 'Hogar'
     public $multa;
 
     public function __construct($db) {
@@ -33,29 +33,31 @@ class Loan {
         // Si hay libros, proceder con el préstamo
         $query = "INSERT INTO " . $this->table_name . "
                   SET
-                    libro_id=:libro_id, usuario_id=:usuario_id,
-                    fecha_prestamo=:fecha_prestamo, fecha_devolucion_estimada=:fecha_devolucion_estimada,
-                    estado=:estado, multa=:multa";
+                    libro_id=:libro_id,
+                    fecha_prestamo=:fecha_prestamo,
+                    fecha_devolucion_estimada=:fecha_devolucion_estimada,
+                    estado=:estado,
+                    ubicacion_lectura=:ubicacion_lectura,
+                    multa=:multa";
 
         $stmt = $this->conn->prepare($query);
 
         // Sanitizar datos
         $this->libro_id = htmlspecialchars(strip_tags($this->libro_id));
-        $this->usuario_id = htmlspecialchars(strip_tags($this->usuario_id));
         $this->estado = htmlspecialchars(strip_tags($this->estado));
+        $this->ubicacion_lectura = htmlspecialchars(strip_tags($this->ubicacion_lectura));
         $this->multa = htmlspecialchars(strip_tags($this->multa));
 
-        // Asignar fechas
-        $this->fecha_prestamo = date('Y-m-d H:i:s');
-        // Por defecto, 15 días para devolver
-        $this->fecha_devolucion_estimada = date('Y-m-d H:i:s', strtotime('+15 days'));
+        // Asignar fechas si no están definidas
+        if (empty($this->fecha_prestamo)) $this->fecha_prestamo = date('Y-m-d H:i:s');
+        if (empty($this->fecha_devolucion_estimada)) $this->fecha_devolucion_estimada = date('Y-m-d H:i:s', strtotime('+15 days'));
 
         // Vincular parámetros
         $stmt->bindParam(":libro_id", $this->libro_id);
-        $stmt->bindParam(":usuario_id", $this->usuario_id);
         $stmt->bindParam(":fecha_prestamo", $this->fecha_prestamo);
         $stmt->bindParam(":fecha_devolucion_estimada", $this->fecha_devolucion_estimada);
         $stmt->bindParam(":estado", $this->estado);
+        $stmt->bindParam(":ubicacion_lectura", $this->ubicacion_lectura);
         $stmt->bindParam(":multa", $this->multa);
 
         // Ejecutar y actualizar la disponibilidad del libro
@@ -67,33 +69,17 @@ class Loan {
         return false;
     }
 
-    // Leer todos los préstamos (con información del libro y usuario)
+    // Leer todos los préstamos (solo libro y datos de control)
     public function readAll() {
         $query = "SELECT
-                    p.id, p.libro_id, p.usuario_id, p.fecha_prestamo, p.fecha_devolucion_estimada, p.fecha_devolucion_real, p.estado, p.multa,
-                    l.titulo as libro_titulo, u.nombre_usuario as estudiante_nombre
+                    p.id, p.libro_id, p.fecha_prestamo, p.fecha_devolucion_estimada,
+                    p.fecha_devolucion_real, p.estado, p.ubicacion_lectura, p.multa,
+                    l.titulo as libro_titulo, l.isbn as libro_isbn, l.ubicacion_fisica as libro_ubicacion
                   FROM " . $this->table_name . " p
                   LEFT JOIN libros l ON p.libro_id = l.id
-                  LEFT JOIN usuarios u ON p.usuario_id = u.id
                   ORDER BY p.fecha_prestamo DESC";
 
         $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt;
-    }
-
-    // Leer préstamos de un usuario específico
-    public function readByUserId($user_id) {
-        $query = "SELECT
-                    p.id, p.libro_id, p.fecha_prestamo, p.fecha_devolucion_estimada, p.estado, p.multa,
-                    l.titulo as libro_titulo, l.autor as libro_autor
-                  FROM " . $this->table_name . " p
-                  JOIN libros l ON p.libro_id = l.id
-                  WHERE p.usuario_id = ?
-                  ORDER BY p.fecha_prestamo DESC";
-
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(1, $user_id);
         $stmt->execute();
         return $stmt;
     }

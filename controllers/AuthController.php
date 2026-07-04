@@ -36,17 +36,30 @@ class AuthController {
                 if ($this->user->rol === 'admin') {
                     header("Location: " . BASE_PATH . "/admin");
                 } else {
-                    header("Location: " . BASE_PATH . "/student");
+                    // Por defecto si hay otros roles (como ayudantes futuros) o error
+                    header("Location: " . BASE_PATH . "/admin");
                 }
                 exit;
             } else {
                 // Si el login falla, determinar el mensaje de error específico
                 if ($login_result === 1) {
-                    $error = "El nombre de usuario no se ha encontrado.";
+                    $alert = [
+                        'type' => 'error',
+                        'title' => 'Usuario no encontrado',
+                        'description' => 'El nombre de usuario ingresado no existe en nuestra base de datos.'
+                    ];
                 } else if ($login_result === 2) {
-                    $error = "La contraseña es incorrecta.";
+                    $alert = [
+                        'type' => 'warning',
+                        'title' => 'Contraseña incorrecta',
+                        'description' => 'La contraseña no coincide con el usuario proporcionado.'
+                    ];
                 } else {
-                    $error = "Ha ocurrido un error inesperado durante el login.";
+                    $alert = [
+                        'type' => 'error',
+                        'title' => 'Error de Acceso',
+                        'description' => 'Ocurrió un problema inesperado al intentar iniciar sesión.'
+                    ];
                 }
                 // Cargar la vista de login y pasarle el mensaje de error
                 require 'views/auth/login.php';
@@ -80,13 +93,6 @@ class AuthController {
         }
     }
 
-    public static function requireStudent() {
-        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'student') {
-            // Si no es estudiante, redirigir al login
-            header("Location: " . BASE_PATH . "/auth/login");
-            exit;
-        }
-    }
 
     public static function isLoggedIn() {
         return isset($_SESSION['user_id']);

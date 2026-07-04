@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedBookId = bookSelect.value;
         currentQuestions = quizData[selectedBookId] || [];
         if (currentQuestions.length === 0) {
-            alert('No hay preguntas para este libro.');
+            showToast('No hay preguntas para este libro.', 'warning');
             return;
         }
 

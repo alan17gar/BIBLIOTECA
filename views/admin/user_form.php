@@ -7,6 +7,8 @@ $page_title = $is_edit ? "Editar Usuario" : "Añadir Nuevo Usuario";
 include_once 'views/includes/header.php';
 ?>
 
+<?php include_once 'views/includes/alerts.php'; ?>
+
 <div class="page-header">
     <h1><?php echo $page_title; ?></h1>
     <a href="<?php echo BASE_PATH; ?>/admin/users" class="btn btn-secondary">Volver a la lista</a>
@@ -41,8 +43,7 @@ include_once 'views/includes/header.php';
         <div class="form-group">
             <label for="rol">Rol</label>
             <select id="rol" name="rol" class="form-control" required>
-                <option value="student" <?php echo ($is_edit && $this->user->rol == 'student') ? 'selected' : ''; ?>>Estudiante</option>
-                <option value="admin" <?php echo ($is_edit && $this->user->rol == 'admin') ? 'selected' : ''; ?>>Administrador</option>
+                <option value="admin" selected>Administrador</option>
             </select>
         </div>
 

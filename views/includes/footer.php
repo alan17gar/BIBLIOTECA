@@ -3,8 +3,7 @@
 
     <footer class="main-footer">
         <div class="container">
-            <p>&copy; <?php echo date("Y"); ?> Biblioteca App. Todos los derechos reservados.</p>
-            <p>Un proyecto desarrollado con PHP, JS y ❤️</p>
+            <p>&copy; 2026 Biblioteca App. Todos los derechos reservados. Un proyecto desarrollado Por Alan Garcia</p>
         </div>
     </footer>
 

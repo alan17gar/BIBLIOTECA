@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const matchedCards = document.querySelectorAll('.is-matched');
         if (matchedCards.length === cardsArray.length) {
             stopTimer();
-            setTimeout(() => alert(`¡Ganaste! Lo hiciste en ${moves} movimientos y ${timer} segundos.`), 500);
+            setTimeout(() => showToast(`¡Ganaste! Lo hiciste en ${moves} movimientos y ${timer} segundos.`, 'success'), 500);
         }
     }
 
