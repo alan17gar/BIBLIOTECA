@@ -5,7 +5,6 @@
 require_once 'models/User.php';
 require_once 'models/Book.php';
 require_once 'models/Loan.php';
-require_once 'models/Student.php';
 require_once 'controllers/AuthController.php'; // Para usar los checks de rol
 
 class AdminController {
@@ -13,14 +12,12 @@ class AdminController {
     private $user;
     private $book;
     private $loan;
-    private $student;
 
     public function __construct($db) {
         $this->db = $db;
         $this->user = new User($this->db);
         $this->book = new Book($this->db);
         $this->loan = new Loan($this->db);
-        $this->student = new Student($this->db);
 
         // Proteger todas las acciones del admin
         AuthController::requireAdmin();

@@ -87,7 +87,7 @@ function showToast(msg, type = 'info') {
     const container = document.getElementById('notification-container') || createNotificationContainer();
 
     const toast = document.createElement('div');
-    toast.className = `alert-card alert-\${type} toast-notif`;
+    toast.className = `alert-card alert-${type} toast-notif`;
     toast.style.marginBottom = '10px';
     toast.style.width = '100%';
     toast.style.maxWidth = '400px';
@@ -97,8 +97,8 @@ function showToast(msg, type = 'info') {
         <button class="alert-close" onclick="this.parentElement.remove()">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
-        <div class="alert-title">\${type.toUpperCase()}</div>
-        <div class="alert-description">\${msg}</div>
+        <div class="alert-title">${type.toUpperCase()}</div>
+        <div class="alert-description">${msg}</div>
     `;
 
     container.appendChild(toast);
