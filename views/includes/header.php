@@ -48,3 +48,21 @@
 
     <main class="main-content">
         <div class="container">
+
+        <!-- Contenedor para notificaciones -->
+        <div id="notification-container"></div>
+
+        <!-- Modal de Confirmación Estilizado -->
+        <div id="confirm-modal" class="modal-overlay" style="display:none;">
+            <div class="modal-content glass-card">
+                <div class="modal-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <h3 id="confirm-modal-title">¿Confirmar Acción?</h3>
+                <p id="confirm-modal-text">¿Estás seguro de que deseas realizar esta acción?</p>
+                <div class="modal-actions">
+                    <button id="confirm-modal-cancel" class="btn btn-secondary">Cancelar</button>
+                    <button id="confirm-modal-ok" class="btn btn-primary">Confirmar</button>
+                </div>
+            </div>
+        </div>

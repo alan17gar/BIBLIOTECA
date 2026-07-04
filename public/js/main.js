@@ -58,25 +58,57 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- Confirmación antes de eliminar ---
-    // Aunque ya hay un `onclick` en el HTML, este es un enfoque más moderno y centralizado.
-    // Lo dejamos comentado para no duplicar la funcionalidad, pero es una buena práctica.
-    /*
+    // --- Confirmación antes de eliminar (Global) ---
     const deleteButtons = document.querySelectorAll('.btn-danger');
     deleteButtons.forEach(button => {
-        // Asegurarse de que no estamos añadiendo el listener a un botón de logout
-        if (button.href && button.href.includes('/delete')) {
+        // Si el botón ya tiene un customConfirm o es de logout, lo ignoramos para no duplicar
+        if (button.tagName === 'A' && button.href && button.href.includes('/delete') && !button.onclick) {
             button.addEventListener('click', function(event) {
-                if (!confirm('¿Estás seguro de que quieres realizar esta acción?')) {
-                    event.preventDefault();
-                }
+                event.preventDefault();
+                const targetUrl = this.href;
+                customConfirm(
+                    '¿Estás seguro?',
+                    '¿Deseas realizar esta acción de eliminación permanentemente?',
+                    () => window.location.href = targetUrl
+                );
             });
         }
     });
-    */
 
     console.log('Biblioteca App JS inicializado.');
 });
+
+/**
+ * Reemplaza el confirm() nativo con un modal estilizado
+ */
+let confirmCallback = null;
+
+function customConfirm(title, text, callback) {
+    const modal = document.getElementById('confirm-modal');
+    const titleEl = document.getElementById('confirm-modal-title');
+    const textEl = document.getElementById('confirm-modal-text');
+    const okBtn = document.getElementById('confirm-modal-ok');
+    const cancelBtn = document.getElementById('confirm-modal-cancel');
+
+    titleEl.textContent = title;
+    textEl.textContent = text;
+    modal.style.display = 'flex';
+    confirmCallback = callback;
+
+    const closeInside = () => {
+        modal.style.display = 'none';
+        okBtn.removeEventListener('click', okHandler);
+        cancelBtn.removeEventListener('click', closeInside);
+    };
+
+    const okHandler = () => {
+        closeInside();
+        if (confirmCallback) confirmCallback();
+    };
+
+    okBtn.addEventListener('click', okHandler);
+    cancelBtn.addEventListener('click', closeInside);
+}
 
 /**
  * Muestra una notificación elegante (Toast) similar a los tarjetones

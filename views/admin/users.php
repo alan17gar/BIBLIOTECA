@@ -44,7 +44,8 @@ include_once 'views/includes/header.php';
                     echo "<a href='" . BASE_PATH . "/admin/editUser/{$id}' class='btn btn-sm btn-warning'>Editar</a>";
                     // Evitar que el admin se borre a sí mismo
                     if ($_SESSION['user_id'] != $id) {
-                        echo "<a href='" . BASE_PATH . "/admin/deleteUser/{$id}' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro?\");'>Eliminar</a>";
+                        $delete_url = BASE_PATH . "/admin/deleteUser/{$id}";
+                        echo "<button type='button' class='btn btn-sm btn-danger' onclick='customConfirm(\"¿Eliminar Usuario?\", \"¿Estás seguro de que quieres eliminar a este usuario?\", function(){ window.location.href=\"$delete_url\"; })'>Eliminar</button>";
                     }
                     echo "</td>";
                     echo "</tr>";

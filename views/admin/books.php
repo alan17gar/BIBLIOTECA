@@ -92,7 +92,8 @@ include_once 'views/includes/header.php';
                     echo "<td class='actions'>";
                     // Botones de acción (editar, eliminar)
                     echo "<a href='" . BASE_PATH . "/admin/editBook/{$id}' class='btn btn-sm btn-warning'>Editar</a>";
-                    echo "<a href='" . BASE_PATH . "/admin/deleteBook/{$id}' class='btn btn-sm btn-danger' onclick='return confirm(\"¿Estás seguro de que quieres eliminar este libro?\");'>Eliminar</a>";
+                    $delete_url = BASE_PATH . "/admin/deleteBook/{$id}";
+                    echo "<button type='button' class='btn btn-sm btn-danger' onclick='customConfirm(\"¿Eliminar Libro?\", \"¿Estás seguro de que quieres eliminar este libro permanentemente?\", function(){ window.location.href=\"$delete_url\"; })'>Eliminar</button>";
                     echo "</td>";
                     echo "</tr>";
                 }
