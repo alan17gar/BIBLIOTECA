@@ -21,10 +21,9 @@
         <div class="container">
             <?php
             $logo_url = BASE_PATH . "/";
-            if (isset($_SESSION['user_role'])) {
-                if ($_SESSION['user_role'] === 'admin') {
-                    $logo_url = BASE_PATH . "/admin/dashboard";
-                }
+            if (isset($_SESSION['user_id'])) {
+                // Si la sesión está activa, redirigir al Dashboard administrativo
+                $logo_url = BASE_PATH . "/admin";
             }
             ?>
             <a href="<?php echo $logo_url; ?>" class="logo">
@@ -38,13 +37,9 @@
 
             <nav class="main-nav" id="main-nav">
                 <?php
-                // Cargar la navegación correspondiente según el rol del usuario
-                if (isset($_SESSION['user_role'])) {
-                    if ($_SESSION['user_role'] === 'admin') {
-                        include 'nav_admin.php';
-                    } else if ($_SESSION['user_role'] === 'student') {
-                        include 'nav_student.php';
-                    }
+                // Sistema puramente administrativo: cargar navegación de admin para usuarios autenticados
+                if (isset($_SESSION['user_id'])) {
+                    include 'nav_admin.php';
                 }
                 ?>
             </nav>

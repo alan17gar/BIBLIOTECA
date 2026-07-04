@@ -36,7 +36,8 @@ class AuthController {
                 if ($this->user->rol === 'admin') {
                     header("Location: " . BASE_PATH . "/admin");
                 } else {
-                    header("Location: " . BASE_PATH . "/student");
+                    // Por defecto si hay otros roles (como ayudantes futuros) o error
+                    header("Location: " . BASE_PATH . "/admin");
                 }
                 exit;
             } else {
@@ -80,13 +81,6 @@ class AuthController {
         }
     }
 
-    public static function requireStudent() {
-        if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'student') {
-            // Si no es estudiante, redirigir al login
-            header("Location: " . BASE_PATH . "/auth/login");
-            exit;
-        }
-    }
 
     public static function isLoggedIn() {
         return isset($_SESSION['user_id']);

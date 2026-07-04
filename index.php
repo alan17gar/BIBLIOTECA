@@ -71,7 +71,7 @@ if (file_exists('controllers/' . $controller_name . '.php')) {
     }
 } else {
     // Si la ruta no coincide con un controlador, redirigir a la página de login.
-    // Esto es útil para rutas como 'admin' o 'student' que actúan como alias.
+    // Esto es útil para rutas como 'admin' que actúan como alias.
     switch ($parts[0]) {
         case 'admin':
             $controller = new AdminController($db);
