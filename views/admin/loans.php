@@ -18,9 +18,6 @@ include_once 'views/includes/header.php';
     <table class="data-table">
         <thead>
             <tr>
-                <th>Estudiante</th>
-                <th>Cédula</th>
-                <th>Año</th>
                 <th>Libro</th>
                 <th>ISBN</th>
                 <th>Ubicación Lectura</th>
@@ -38,9 +35,6 @@ include_once 'views/includes/header.php';
                     $status_class = 'status-' . htmlspecialchars($estado);
 
                     echo "<tr>";
-                    echo "<td>" . htmlspecialchars($estudiante_nombre) . "</td>";
-                    echo "<td>" . htmlspecialchars($estudiante_cedula) . "</td>";
-                    echo "<td>" . htmlspecialchars($estudiante_anio) . "</td>";
                     echo "<td>" . htmlspecialchars($libro_titulo) . "</td>";
                     echo "<td>" . htmlspecialchars($libro_isbn) . "</td>";
                     echo "<td>" . htmlspecialchars($ubicacion_lectura) . "</td>";
@@ -57,7 +51,7 @@ include_once 'views/includes/header.php';
                     echo "</tr>";
                 }
             } else {
-                echo "<tr><td colspan='10'>No hay préstamos registrados.</td></tr>";
+                echo "<tr><td colspan='7'>No hay préstamos registrados.</td></tr>";
             }
             ?>
         </tbody>

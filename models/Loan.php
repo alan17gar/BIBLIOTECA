@@ -73,16 +73,14 @@ class Loan {
         return false;
     }
 
-    // Leer todos los préstamos (con información del libro y estudiante)
+    // Leer todos los préstamos (solo libro y datos de control)
     public function readAll() {
         $query = "SELECT
-                    p.id, p.libro_id, p.estudiante_id, p.fecha_prestamo, p.fecha_devolucion_estimada,
+                    p.id, p.libro_id, p.fecha_prestamo, p.fecha_devolucion_estimada,
                     p.fecha_devolucion_real, p.estado, p.ubicacion_lectura, p.multa,
-                    l.titulo as libro_titulo, l.isbn as libro_isbn, l.ubicacion_fisica as libro_ubicacion,
-                    e.nombre_completo as estudiante_nombre, e.cedula as estudiante_cedula, e.anio_secundaria as estudiante_anio
+                    l.titulo as libro_titulo, l.isbn as libro_isbn, l.ubicacion_fisica as libro_ubicacion
                   FROM " . $this->table_name . " p
                   LEFT JOIN libros l ON p.libro_id = l.id
-                  LEFT JOIN estudiantes e ON p.estudiante_id = e.id
                   ORDER BY p.fecha_prestamo DESC";
 
         $stmt = $this->conn->prepare($query);

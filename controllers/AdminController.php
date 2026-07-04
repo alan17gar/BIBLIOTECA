@@ -259,24 +259,22 @@ class AdminController {
         $pdf->Cell(0, 10, utf8_decode('Reporte de Préstamos'), 0, 1, 'C');
         $pdf->Ln(5);
         $pdf->SetFont('Arial', 'B', 9);
-        $pdf->Cell(50, 7, 'Estudiante', 1);
-        $pdf->Cell(25, 7, utf8_decode('Cédula'), 1);
-        $pdf->Cell(60, 7, 'Libro', 1);
+        $pdf->Cell(80, 7, 'Libro', 1);
+        $pdf->Cell(40, 7, 'ISBN', 1);
         $pdf->Cell(30, 7, utf8_decode('Fecha Prést.'), 1);
         $pdf->Cell(30, 7, 'Fecha Dev.', 1);
-        $pdf->Cell(30, 7, 'Ubicacion', 1);
-        $pdf->Cell(25, 7, 'Estado', 1);
+        $pdf->Cell(40, 7, 'Ubicacion', 1);
+        $pdf->Cell(30, 7, 'Estado', 1);
         $pdf->Ln();
         $pdf->SetFont('Arial', '', 8);
         $stmt = $this->loan->readAll();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $pdf->Cell(50, 6, utf8_decode($row['estudiante_nombre']), 1);
-            $pdf->Cell(25, 6, $row['estudiante_cedula'], 1);
-            $pdf->Cell(60, 6, utf8_decode(substr($row['libro_titulo'], 0, 35)), 1);
+            $pdf->Cell(80, 6, utf8_decode(substr($row['libro_titulo'], 0, 45)), 1);
+            $pdf->Cell(40, 6, $row['libro_isbn'], 1);
             $pdf->Cell(30, 6, date('d/m/Y', strtotime($row['fecha_prestamo'])), 1);
             $pdf->Cell(30, 6, date('d/m/Y', strtotime($row['fecha_devolucion_estimada'])), 1);
-            $pdf->Cell(30, 6, $row['ubicacion_lectura'], 1);
-            $pdf->Cell(25, 6, $row['estado'], 1);
+            $pdf->Cell(40, 6, utf8_decode($row['ubicacion_lectura']), 1);
+            $pdf->Cell(30, 6, $row['estado'], 1);
             $pdf->Ln();
         }
         $pdf->Output('D', 'prestamos.pdf');
@@ -288,13 +286,10 @@ class AdminController {
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename=prestamos.csv');
         $output = fopen('php://output', 'w');
-        fputcsv($output, ['Estudiante', 'Cedula', 'Año', 'Libro', 'ISBN', 'Ubicacion Lectura', 'Fecha Prestamo', 'Fecha Dev. Estimada', 'Estado']);
+        fputcsv($output, ['Libro', 'ISBN', 'Ubicacion Lectura', 'Fecha Prestamo', 'Fecha Dev. Estimada', 'Estado']);
         $stmt = $this->loan->readAll();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             fputcsv($output, [
-                $row['estudiante_nombre'],
-                $row['estudiante_cedula'],
-                $row['estudiante_anio'],
                 $row['libro_titulo'],
                 $row['libro_isbn'],
                 $row['ubicacion_lectura'],
