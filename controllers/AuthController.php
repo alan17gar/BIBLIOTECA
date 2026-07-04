@@ -43,11 +43,23 @@ class AuthController {
             } else {
                 // Si el login falla, determinar el mensaje de error específico
                 if ($login_result === 1) {
-                    $error = "El nombre de usuario no se ha encontrado.";
+                    $alert = [
+                        'type' => 'error',
+                        'title' => 'Usuario no encontrado',
+                        'description' => 'El nombre de usuario ingresado no existe en nuestra base de datos.'
+                    ];
                 } else if ($login_result === 2) {
-                    $error = "La contraseña es incorrecta.";
+                    $alert = [
+                        'type' => 'warning',
+                        'title' => 'Contraseña incorrecta',
+                        'description' => 'La contraseña no coincide con el usuario proporcionado.'
+                    ];
                 } else {
-                    $error = "Ha ocurrido un error inesperado durante el login.";
+                    $alert = [
+                        'type' => 'error',
+                        'title' => 'Error de Acceso',
+                        'description' => 'Ocurrió un problema inesperado al intentar iniciar sesión.'
+                    ];
                 }
                 // Cargar la vista de login y pasarle el mensaje de error
                 require 'views/auth/login.php';

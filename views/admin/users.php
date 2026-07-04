@@ -5,6 +5,8 @@ $page_title = "Gestionar Usuarios";
 include_once 'views/includes/header.php';
 ?>
 
+<?php include_once 'views/includes/alerts.php'; ?>
+
 <div class="page-header">
     <h1>Gestión de Usuarios</h1>
     <!-- El enlace para crear usuario apuntará a una acción que aún no he implementado en el controlador -->

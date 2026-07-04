@@ -14,11 +14,7 @@ include_once 'views/includes/header.php';
 
         <p class="login-description">Inicia sesión para acceder al sistema</p>
 
-        <?php
-        if (isset($error)) {
-            echo '<div class="alert alert-danger" style="margin-bottom: 1.5rem; padding: 1rem; border-radius: 12px; background: rgba(255, 23, 68, 0.1); color: var(--danger-color); font-weight: 600;">' . htmlspecialchars($error) . '</div>';
-        }
-        ?>
+        <?php include_once 'views/includes/alerts.php'; ?>
 
         <form action="<?php echo BASE_PATH; ?>/auth/login" method="post" id="login-form">
             <div class="form-group">

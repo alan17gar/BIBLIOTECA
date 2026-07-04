@@ -5,6 +5,8 @@ $page_title = "Gestionar Libros";
 include_once 'views/includes/header.php';
 ?>
 
+<?php include_once 'views/includes/alerts.php'; ?>
+
 <div class="page-header">
     <h1>Gestión de Libros</h1>
     <div class="header-actions">

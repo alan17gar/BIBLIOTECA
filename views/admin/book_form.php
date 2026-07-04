@@ -8,6 +8,8 @@ $page_title = $is_edit ? "Editar Libro" : "Añadir Nuevo Libro";
 include_once 'views/includes/header.php';
 ?>
 
+<?php include_once 'views/includes/alerts.php'; ?>
+
 <div class="page-header">
     <h1><?php echo $page_title; ?></h1>
     <a href="<?php echo BASE_PATH; ?>/admin/books" class="btn btn-secondary">Volver a la lista</a>

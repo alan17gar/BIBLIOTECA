@@ -8,7 +8,6 @@ class Loan {
     // Propiedades del objeto Préstamo
     public $id;
     public $libro_id;
-    public $estudiante_id;
     public $fecha_prestamo;
     public $fecha_devolucion_estimada;
     public $fecha_devolucion_real;
@@ -35,7 +34,6 @@ class Loan {
         $query = "INSERT INTO " . $this->table_name . "
                   SET
                     libro_id=:libro_id,
-                    estudiante_id=:estudiante_id,
                     fecha_prestamo=:fecha_prestamo,
                     fecha_devolucion_estimada=:fecha_devolucion_estimada,
                     estado=:estado,
@@ -46,7 +44,6 @@ class Loan {
 
         // Sanitizar datos
         $this->libro_id = htmlspecialchars(strip_tags($this->libro_id));
-        $this->estudiante_id = htmlspecialchars(strip_tags($this->estudiante_id));
         $this->estado = htmlspecialchars(strip_tags($this->estado));
         $this->ubicacion_lectura = htmlspecialchars(strip_tags($this->ubicacion_lectura));
         $this->multa = htmlspecialchars(strip_tags($this->multa));
@@ -57,7 +54,6 @@ class Loan {
 
         // Vincular parámetros
         $stmt->bindParam(":libro_id", $this->libro_id);
-        $stmt->bindParam(":estudiante_id", $this->estudiante_id);
         $stmt->bindParam(":fecha_prestamo", $this->fecha_prestamo);
         $stmt->bindParam(":fecha_devolucion_estimada", $this->fecha_devolucion_estimada);
         $stmt->bindParam(":estado", $this->estado);

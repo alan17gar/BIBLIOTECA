@@ -66,8 +66,19 @@ class AdminController {
             $this->book->pdf_ruta = $this->uploadFile('pdf', 'uploads/pdfs/');
 
             if ($this->book->create()) {
+                $_SESSION['flash_alert'] = [
+                    'type' => 'success',
+                    'title' => '¡Libro Creado!',
+                    'description' => 'El libro se ha registrado correctamente en el sistema.'
+                ];
                 header("Location: " . BASE_PATH . "/admin/books");
                 exit;
+            } else {
+                $alert = [
+                    'type' => 'error',
+                    'title' => 'Error al crear',
+                    'description' => 'Ocurrió un problema al guardar el libro. Verifique los datos.'
+                ];
             }
         }
         require 'views/admin/book_form.php'; // Formulario para crear/editar
@@ -96,21 +107,43 @@ class AdminController {
             if (!empty($nuevo_pdf)) $this->book->pdf_ruta = $nuevo_pdf;
 
             if ($this->book->update()) {
+                $_SESSION['flash_alert'] = [
+                    'type' => 'success',
+                    'title' => 'Libro Actualizado',
+                    'description' => 'Los cambios se han guardado con éxito.'
+                ];
                 header("Location: " . BASE_PATH . "/admin/books");
                 exit;
+            } else {
+                $alert = [
+                    'type' => 'error',
+                    'title' => 'Error al actualizar',
+                    'description' => 'No se pudieron guardar los cambios del libro.'
+                ];
             }
         } else {
             $this->book->readOne();
-            require 'views/admin/book_form.php';
         }
+        require 'views/admin/book_form.php';
     }
 
     public function deleteBook($id) {
         $this->book->id = $id;
         if ($this->book->delete()) {
-            header("Location: " . BASE_PATH . "/admin/books");
-            exit;
+            $_SESSION['flash_alert'] = [
+                'type' => 'success',
+                'title' => 'Libro Eliminado',
+                'description' => 'El registro ha sido borrado del sistema.'
+            ];
+        } else {
+            $_SESSION['flash_alert'] = [
+                'type' => 'error',
+                'title' => 'Error',
+                'description' => 'No se pudo eliminar el libro seleccionado.'
+            ];
         }
+        header("Location: " . BASE_PATH . "/admin/books");
+        exit;
     }
 
     // --- Gestión de Usuarios (CRUD) ---
@@ -128,8 +161,19 @@ class AdminController {
             $this->user->correo = $_POST['correo'];
 
             if ($this->user->create()) {
+                $_SESSION['flash_alert'] = [
+                    'type' => 'success',
+                    'title' => 'Usuario Registrado',
+                    'description' => 'La cuenta de administrador se ha creado exitosamente.'
+                ];
                 header("Location: " . BASE_PATH . "/admin/users");
                 exit;
+            } else {
+                $alert = [
+                    'type' => 'error',
+                    'title' => 'Error de Registro',
+                    'description' => 'No se pudo crear el usuario. El nombre de usuario o correo podrían estar ya en uso.'
+                ];
             }
         }
         require 'views/admin/user_form.php';
@@ -147,21 +191,43 @@ class AdminController {
             $this->user->correo = $_POST['correo'];
 
             if ($this->user->update()) {
+                $_SESSION['flash_alert'] = [
+                    'type' => 'success',
+                    'title' => 'Perfil Actualizado',
+                    'description' => 'La información del usuario ha sido modificada correctamente.'
+                ];
                 header("Location: " . BASE_PATH . "/admin/users");
                 exit;
+            } else {
+                $alert = [
+                    'type' => 'error',
+                    'title' => 'Error de Actualización',
+                    'description' => 'Hubo un problema al actualizar los datos del usuario.'
+                ];
             }
         } else {
             $this->user->readOne();
-            require 'views/admin/user_form.php';
         }
+        require 'views/admin/user_form.php';
     }
 
     public function deleteUser($id) {
         $this->user->id = $id;
         if ($this->user->delete()) {
-            header("Location: " . BASE_PATH . "/admin/users");
-            exit;
+            $_SESSION['flash_alert'] = [
+                'type' => 'success',
+                'title' => 'Usuario Eliminado',
+                'description' => 'El usuario ha sido removido del sistema.'
+            ];
+        } else {
+            $_SESSION['flash_alert'] = [
+                'type' => 'error',
+                'title' => 'Error',
+                'description' => 'No se pudo eliminar al usuario seleccionado.'
+            ];
         }
+        header("Location: " . BASE_PATH . "/admin/users");
+        exit;
     }
 
     // --- Gestión de Préstamos ---
@@ -172,26 +238,26 @@ class AdminController {
 
     public function createLoan() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Manejar estudiante
-            $this->student->cedula = $_POST['cedula'];
-            $this->student->nombre_completo = $_POST['nombre_completo'];
-            $this->student->anio_secundaria = $_POST['anio_secundaria'];
-            $student_id = $this->student->findOrCreate();
+            $this->loan->libro_id = $_POST['libro_id'];
+            $this->loan->ubicacion_lectura = $_POST['ubicacion_lectura'];
+            $this->loan->fecha_devolucion_estimada = $_POST['fecha_devolucion_estimada'];
+            $this->loan->estado = 'prestado';
+            $this->loan->multa = 0;
 
-            if ($student_id) {
-                $this->loan->libro_id = $_POST['libro_id'];
-                $this->loan->estudiante_id = $student_id;
-                $this->loan->ubicacion_lectura = $_POST['ubicacion_lectura'];
-                $this->loan->fecha_devolucion_estimada = $_POST['fecha_devolucion_estimada'];
-                $this->loan->estado = 'prestado';
-                $this->loan->multa = 0;
-
-                if ($this->loan->create()) {
-                    header("Location: " . BASE_PATH . "/admin/loans");
-                    exit;
-                } else {
-                    $error = "No hay ejemplares disponibles para este libro.";
-                }
+            if ($this->loan->create()) {
+                $_SESSION['flash_alert'] = [
+                    'type' => 'success',
+                    'title' => 'Préstamo Registrado',
+                    'description' => 'El préstamo se ha procesado correctamente.'
+                ];
+                header("Location: " . BASE_PATH . "/admin/loans");
+                exit;
+            } else {
+                $alert = [
+                    'type' => 'warning',
+                    'title' => 'Sin Disponibilidad',
+                    'description' => 'No hay ejemplares disponibles para este libro en este momento.'
+                ];
             }
         }
         $books = $this->book->readAll();
@@ -201,9 +267,20 @@ class AdminController {
     public function returnLoan($id) {
         $this->loan->id = $id;
         if ($this->loan->returnBook()) {
-            header("Location: " . BASE_PATH . "/admin/loans");
-            exit;
+            $_SESSION['flash_alert'] = [
+                'type' => 'success',
+                'title' => 'Libro Devuelto',
+                'description' => 'El ejemplar ha sido reintegrado al inventario.'
+            ];
+        } else {
+            $_SESSION['flash_alert'] = [
+                'type' => 'error',
+                'title' => 'Error en Devolución',
+                'description' => 'No se pudo procesar la devolución del libro.'
+            ];
         }
+        header("Location: " . BASE_PATH . "/admin/loans");
+        exit;
     }
 
     // --- Exportación de Datos ---

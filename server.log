@@ -1,0 +1,10 @@
+[Sat Jul  4 06:08:18 2026] PHP 8.3.6 Development Server (http://localhost:8000) started
+[Sat Jul  4 06:09:37 2026] [::1]:39690 Accepted
+[Sat Jul  4 06:09:37 2026] [::1]:39690 [200]: GET /auth/login
+[Sat Jul  4 06:09:37 2026] [::1]:39690 Closing
+[Sat Jul  4 06:09:37 2026] [::1]:39692 Accepted
+[Sat Jul  4 06:09:37 2026] [::1]:39692 [200]: GET /public/css/style.css
+[Sat Jul  4 06:09:37 2026] [::1]:39692 Closing
+[Sat Jul  4 06:09:37 2026] [::1]:39704 Accepted
+[Sat Jul  4 06:09:37 2026] [::1]:39704 [200]: GET /public/js/main.js
+[Sat Jul  4 06:09:37 2026] [::1]:39704 Closing
