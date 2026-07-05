@@ -68,14 +68,13 @@ try {
 
         // El método `create()` del modelo se encarga de hashear la contraseña
         if ($user->create()) {
-            echo "<p class='success'>Usuario '{$userData['nombre_usuario']}' creado con éxito. Contraseña: '{$userData['password']}'</p>";
+            echo "<p class='success'>Usuario '{$userData['nombre_usuario']}' creado con éxito.</p>";
         } else {
             echo "<p class='error'>Error al crear el usuario '{$userData['nombre_usuario']}'.</p>";
         }
     }
 
     echo "<h2>Proceso de siembra completado.</h2>";
-    echo "<p>Ahora puedes iniciar sesión con las credenciales mencionadas arriba.</p>";
 
 } catch (PDOException $e) {
     echo "<p class='error'>Ha ocurrido un error durante la siembra: " . $e->getMessage() . "</p>";

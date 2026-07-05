@@ -73,21 +73,9 @@ Para garantizar que las credenciales de los usuarios de prueba funcionen correct
 
 ## Cómo Usar la Aplicación
 
-### Credenciales de Prueba
-
-Puedes usar las siguientes cuentas para acceder al sistema:
-
-- **Rol Administrador:**
-  - **Usuario:** `admin`
-  - **Contraseña:** `admin123`
-
-- **Rol Estudiante:**
-  - **Usuario:** `estudiante1`
-  - **Contraseña:** `estudiante123`
-
 ### Flujo de Uso
 
-1. **Inicia Sesión:** Usa las credenciales de prueba para entrar como admin o estudiante.
+1. **Inicia Sesión:** Entra con tus credenciales asignadas al sistema.
 2. **Navega por el Panel:**
    - El **admin** puede añadir/editar libros, gestionar usuarios, ver todos los préstamos y asignar tareas.
    - El **estudiante** puede buscar libros en el catálogo, solicitar préstamos, ver su historial, completar tareas y jugar.

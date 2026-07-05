@@ -23,11 +23,11 @@ include_once 'views/includes/header.php';
         <form action="<?php echo BASE_PATH; ?>/auth/login" method="post" id="login-form">
             <div class="form-group">
                 <label for="username">Nombre de Usuario</label>
-                <input type="text" id="username" name="username" class="form-control" placeholder="ej: admin" required>
+                <input type="text" id="username" name="username" class="form-control" required>
             </div>
             <div class="form-group">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+                <input type="password" id="password" name="password" class="form-control" required>
             </div>
             <div class="form-group" style="margin-top: 2rem;">
                 <button type="submit" class="btn btn-primary btn-block">Entrar al Sistema</button>
