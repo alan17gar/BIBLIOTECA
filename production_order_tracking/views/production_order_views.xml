@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="view_production_order_list" model="ir.ui.view">
+            <field name="name">production.order.list</field>
+            <field name="model">production.order</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="product_name"/>
+                    <field name="quantity_kg"/>
+                    <field name="produced_kg"/>
+                    <field name="remaining_kg"/>
+                    <field name="deadline_date"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_production_order_form" model="ir.ui.view">
+            <field name="name">production.order.form</field>
+            <field name="model">production.order</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_confirm" string="Confirm" type="object" class="btn-primary" invisible="state != 'draft'"/>
+                        <button name="%(action_production_daily_wizard)d" string="Register Daily Production" type="action" class="btn-primary" invisible="state != 'in_progress'"/>
+                        <button name="%(action_weekly_report_wizard)d" string="Generate Weekly Report" type="action" class="btn-secondary" invisible="state not in ['in_progress', 'done']"/>
+                        <button name="action_cancel" string="Cancel" type="object" invisible="state not in ['in_progress', 'done']"/>
+                        <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state != 'cancel'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done,cancel"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_daily_entries" type="object" class="oe_stat_button" icon="fa-tasks">
+                                <field name="daily_entry_count" widget="statinfo" string="Daily Entries"/>
+                            </button>
+                        </div>
+                        <group>
+                            <field name="name" readonly="1"/>
+                        </group>
+                        <group>
+                            <group>
+                                <field name="product_name" decoration-danger="is_overdue"/>
+                                <field name="quantity_kg"/>
+                                <field name="deadline_date"/>
+                                <field name="is_overdue" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="produced_kg"/>
+                                <field name="remaining_kg"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Daily Production">
+                                <field name="daily_ids"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_production_order_search" model="ir.ui.view">
+            <field name="name">production.order.search</field>
+            <field name="model">production.order</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="product_name"/>
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                    <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                    <filter string="Overdue" name="overdue" domain="[('is_overdue', '=', True)]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_production_order" model="ir.actions.act_window">
+            <field name="name">Production Orders</field>
+            <field name="res_model">production.order</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_production_order_search"/>
+        </record>
+    </data>
+</odoo>

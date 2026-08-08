@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="weekly_report_template">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Weekly Production Report</h2>
+                        <p>From <span t-esc="data['data']['date_start']"/> to <span t-esc="data['data']['date_end']"/></p>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Product</th>
+                                    <th>Total Qty (kg)</th>
+                                    <th>Produced This Week (kg)</th>
+                                    <th>Total Produced (kg)</th>
+                                    <th>Remaining (kg)</th>
+                                    <th>Deadline</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="docs" t-as="order">
+                                    <td><span t-esc="order.name"/></td>
+                                    <td><span t-esc="order.product_name"/></td>
+                                    <td><span t-esc="order.quantity_kg"/></td>
+                                    <td><span t-esc="get_weekly_production(order, data)"/></td>
+                                    <td><span t-esc="order.produced_kg"/></td>
+                                    <td><span t-esc="order.remaining_kg"/></td>
+                                    <td><span t-esc="order.deadline_date"/></td>
+                                    <td><span t-esc="order.state"/></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-right"><strong>Totals</strong></td>
+                                    <td><strong><span t-esc="sum(get_weekly_production(order, data) for order in docs)"/></strong></td>
+                                    <td><strong><span t-esc="sum(order.produced_kg for order in docs)"/></strong></td>
+                                    <td colspan="3"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <record id="action_report_weekly_production" model="ir.actions.report">
+            <field name="name">Weekly Production Report</field>
+            <field name="model">production.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">production_order_tracking.weekly_report_template</field>
+            <field name="report_file">production_order_tracking.weekly_report_template</field>
+            <field name="binding_model_id" ref="model_production_order"/>
+            <field name="binding_type">report</field>
+        </record>
+
+    </data>
+</odoo>

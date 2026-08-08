@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_report_weekly_production_xlsx" model="ir.actions.report">
+            <field name="name">Weekly Production Report XLSX</field>
+            <field name="model">production.order</field>
+            <field name="report_type">xlsx</field>
+            <field name="report_name">production_order_tracking.weekly_production_xlsx</field>
+            <field name="report_file">production_order_tracking.weekly_production_xlsx</field>
+            <field name="binding_model_id" ref="model_production_order"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>
