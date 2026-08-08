@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View -->
+        <record id="view_production_daily_tree" model="ir.ui.view">
+            <field name="name">production.daily.tree</field>
+            <field name="model">production.daily</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="order_id"/>
+                    <field name="date"/>
+                    <field name="produced_today"/>
+                    <field name="lot_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_production_daily_form" model="ir.ui.view">
+            <field name="name">production.daily.form</field>
+            <field name="model">production.daily</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="order_id"/>
+                            <field name="date"/>
+                            <field name="produced_today"/>
+                            <field name="lot_id"/>
+                            <field name="note"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_production_daily_search" model="ir.ui.view">
+            <field name="name">production.daily.search</field>
+            <field name="model">production.daily</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="order_id"/>
+                    <field name="lot_id"/>
+                    <filter string="Date" name="filter_date" date="date"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_production_daily" model="ir.actions.act_window">
+            <field name="name">Daily Production</field>
+            <field name="res_model">production.daily</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_production_daily_search"/>
+        </record>
+    </data>
+</odoo>
